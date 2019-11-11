@@ -58,9 +58,9 @@
 				<prop key="hibernate.cache.use_second_level_cache">false</prop>
 				<prop key="hibernate.cache.use_query_cache">false</prop>
 				<prop key="hibernate.search.default.directory_provider">filesystem</prop>
-                <!--hibernate根据实体自动生成数据库表   -->
+                <!--hibernate根据实体自动生成数据库表  
 				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop> 
-              
+               -->
 			</props>
 		</property>
 		<property name="namingStrategy">
@@ -82,9 +82,9 @@
 	<bean id="validator"
 		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
-	<!-- 引入spring-data-redis.xml
+	<!-- 引入spring-data-redis.xml -->
 	<import resource="spring-data-redis.xml" />
-     -->
+    
 	<!-- 引入ActiveMQ -->
 	<import resource="spring-activemq-producer.xml" />
 	<import resource="spring-activemq-consumer.xml" />

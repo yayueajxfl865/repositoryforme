@@ -19,7 +19,7 @@
 	</bean>
 	
 	<!-- 创建连接工厂，交给spring容器管理 -->
-	<bean id="connectionFactory"
+	<bean id="redisConnectionFactory"
 		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
 		<property name="poolConfig" ref="poolConfig"></property>
 		<property name="hostName" value="${spring.redis.host}"></property>
@@ -32,7 +32,7 @@
 	<!-- 配置RedisTemplate -->
 	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
 		<!-- 注入连接工厂 -->
-		<property name="connectionFactory" ref="connectionFactory"></property>
+		<property name="connectionFactory" ref="redisConnectionFactory"></property>
 		<!-- 设置key的序列化方式 -->
 		<property name="keySerializer">
 			<bean
@@ -48,14 +48,9 @@
 			<bean
 				class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
 		</property>
-		<!-- 使用JacksonJsonRedisSerializer需要引入jar包：barchart-wrap-jackson-1.8.6-build001.jar -->
-		<!-- JacksonJsonRedisSerializer 需要一个有参的构造函数，因此需要配置constructor-arg -->
-		<property name="hashValueSerializer">
-			<bean
-				class="org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer">
-				<constructor-arg type="java.lang.Class" value="java.lang.Object"></constructor-arg>
-			</bean>
-		</property>
+	    <property name="hashValueSerializer">
+            <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+        </property>
 	</bean>
 
 	<!-- 配置redis连接池 -->
@@ -67,5 +62,10 @@
 		<constructor-arg type="java.lang.String" value="${spring.redis.password}" />
 		<constructor-arg type="int" value="${spring.redis.database}" />
 	</bean>
+	
+	
+	
+	
+	
 
 </beans>

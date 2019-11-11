@@ -15,7 +15,7 @@ import com.okflow.modules.sys.entity.Dict;
  * @version 2019-10-04
  *
  */
-@Repository
+
 public class DictDao extends BaseDao<Dict> {
 
 	public List<Dict> findAllList() {

@@ -12,9 +12,10 @@ import com.okflow.modules.sys.entity.Dict;
  * 
  * @author xiaofanglin
  * @version 2019-10-04
- */
+
 @Service
 @Transactional(readOnly = true)
+ */
 public class DictServer {
 
 	@Autowired
