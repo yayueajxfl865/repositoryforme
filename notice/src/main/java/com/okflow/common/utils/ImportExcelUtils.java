@@ -40,15 +40,14 @@ public class ImportExcelUtils {
 		Sheet sheet = workbook.getSheetAt(0);
 		// 得到标题行
 		Row titleRow = sheet.getRow(0);
-		int lastRowNum = sheet.getLastRowNum();
-		int lastCellNum = titleRow.getLastCellNum();
-
+		int lastRowNum = sheet.getLastRowNum();//获取表格最后一行
+		int lastCellNum = titleRow.getLastCellNum();//获取表格最后一列
 		List<Map<String, Object>> list = new ArrayList<>();
 
-		for (int i = 1; i <= lastRowNum; i++) {
+		for (int i = 1; i <= lastRowNum; i++) {//从表格第一行开始遍历
 			Map<String, Object> map = new HashMap<>();
-			Row row = sheet.getRow(i);
-			for (int j = 0; j < lastCellNum; j++) {
+			Row row = sheet.getRow(i);//获取行
+			for (int j = 0; j < lastCellNum; j++) {//获取列
 				// 得到列名
 				String key = titleRow.getCell(j).getStringCellValue();
 				Cell cell = row.getCell(j);

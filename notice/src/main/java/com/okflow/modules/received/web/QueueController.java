@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.okflow.common.utils.ImportExcelUtils;
 import com.okflow.middleware.activitymq.ProducerService;
+import com.okflow.modules.received.service.YbUserService;
 
 /**
  * 消息队列Controller
@@ -32,6 +33,8 @@ public class QueueController {
 	@Autowired
 	@Qualifier("informQueueDestination")
 	private Destination destination;
+	@Autowired
+	private YbUserService ybUserService;
 
 	@RequestMapping(value = { "tokenUrl" })
 	public String tokenUrl() {
@@ -63,13 +66,15 @@ public class QueueController {
 
 	@RequestMapping(value = { "studentImport" })
 	public String studentImport(@RequestParam(value = "file", required = true) MultipartFile file,
-			HttpServletRequest request) {
+			HttpServletRequest request) {//学生数据导入
 		System.out.println("文件名为:" + file.getOriginalFilename());
 		try {
 			String fileName = file.getOriginalFilename();
 			InputStream inputStream = file.getInputStream();
 			List<Map<String, Object>> sourceList = ImportExcelUtils.readExcel(fileName, inputStream);
 
+			ybUserService.impStuData(sourceList);
+			
 			System.out.println("sourceList" + sourceList);
 		} catch (Exception e) {
 			e.printStackTrace();
