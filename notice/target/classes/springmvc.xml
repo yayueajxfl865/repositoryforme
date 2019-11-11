@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+     <!-- 1、引入的配置属性文件-->
+    <context:property-placeholder ignore-unresolvable="true" location="classpath:config.properties"/>
+     <!-- 2、配置自动扫描的包，use-default-filters="false"属性取消默认扫描所有包的规则 -->
+    <context:component-scan base-package="com.okflow" use-default-filters="false">
+      <!-- 只扫描控制器-->
+         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+     </context:component-scan>
+	
+    <!-- REST中根据URL后缀自动判定Content-Type及相应的View 
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+	    <property name="mediaTypes" >
+	        <map> 
+                <entry key="xml" value="application/xml"/> 
+                <entry key="json" value="application/json"/> 
+            </map>
+	    </property>
+        <property name="ignoreAcceptHeader" value="true"/>
+        <property name="favorPathExtension" value="true"/>
+	</bean>
+    -->
+    <!-- 2、配置视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="${web.view.prefix}"></property>
+    <property name="suffix" value="${web.view.suffix}"></property>
+    </bean>
+    <!-- 3、Springmvc的两个标准配置 -->
+    <!-- 3.1处理静态资源-->
+    <mvc:default-servlet-handler/>
+    
+    <!-- 3.2能支持Springmvc使用一些更高级的功能，数据校验，快捷的ajax -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+    <!-- 4、配置直接转发的页面  --> 
+    <mvc:view-controller path="${web.view.index}/login" view-name="layouts/login"/>
+    <mvc:view-controller path="${web.view.index}/index" view-name="modules/received/index"/>
+     <!-- 5、定义无Controller的path<->view直接映射 
+	<mvc:view-controller path="/" view-name="redirect:${web.view.index}"/>
+     -->
+  <!-- 6、springmvc文件上传文件上传组件 -->
+  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+  <property name="defaultEncoding" value="${web.encoding}"></property>
+  <property name="maxInMemorySize" value="${web.maxUploadSize}"></property>
+  </bean>
+    
+
+
+
+</beans>

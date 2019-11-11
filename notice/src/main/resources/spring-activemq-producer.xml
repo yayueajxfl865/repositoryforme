@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+ 
+	<!-- 生产者 -->
+	<!-- 扫描activemq包 
+	<context:component-scan base-package="com.yundao.store.activemq.*" />
+    -->
+ 
+	<!-- 1.ActiveMQ的连接工厂 -->
+	<bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616" />
+	</bean>
+ 
+	<!-- 2.Spring Caching连接工厂 -->
+	<bean id="connectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory" ref="targetConnectionFactory"></property>
+		<!-- Session缓存数量 -->
+		<property name="sessionCacheSize" value="100" />
+	</bean>
+ 
+	<!-- 3.1.定义用户消息队列（Queue），点对点模型 -->
+	<bean id="informQueueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<!-- 设置消息队列的名字 -->
+		<constructor-arg index="0" value="queue-user" />
+	</bean>
+	<!-- 3.2.定义日志消息队列（Queue），点对点模型
+	<bean id="logQueueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="queue-log" />
+    </bean>
+     -->
+    <!-- 3.3 定义一对多消息队列，发布/订阅模式
+	<bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="itemAddTopic" />
+	</bean>
+    -->
+	<!-- 4.配置JMS模板（Queue）,Spring提供的JMS工具类，它发送、接收消息。 -->
+	<!-- 4.1.队列模板 -->
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="receiveTimeout" value="10000" />
+	</bean>
+
+
+</beans>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+
+    <!-- 消费者 -->
+	<!-- 扫描activemq包
+	<context:component-scan base-package="com.yundao.store.activemq.*" />
+    -->
+	<!-- 1.ActiveMQ的连接工厂 -->
+	<bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616" />
+	</bean>
+ 
+	<!-- 2.Spring Caching连接工厂 -->
+	<bean id="connectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory" ref="targetConnectionFactory"></property>
+		<!-- Session缓存数量 -->
+		<property name="sessionCacheSize" value="100" />
+	</bean>
+ 
+	<!-- 5.第一个消息监听器（Queue) -->
+	<bean id="informQueueMessageListener"
+	      class="com.okflow.middleware.activitymq.QueueMessageListener">
+	</bean>
+	<!-- 第二个消息监听器（Queue) 
+	<bean id="logQueueMessageListener"
+		class="com.yundao.store.activemq.listener.logQueueMessageListener">
+	</bean>
+     -->
+	<!-- 6.第一个消息监听容器（Queue），配置连接工厂，监听的目标是demoQueueDestination，监听器是上面定义的监听器 --><!-- 自动获取 -->
+	<bean id="sessionAwareListenerContainer01"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="informQueueDestination" />
+		<property name="messageListener" ref="informQueueMessageListener" />
+	</bean>
+ 
+	<!-- 6.第二个消息监听容器（Queue），配置连接工厂，监听的目标是demoQueueDestination，监听器是上面定义的监听器
+	<bean id="sessionAwareListenerContainer02"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="logQueueDestination" />
+		<property name="messageListener" ref="logQueueMessageListener" />
+	</bean>
+	 -->
+	<!-- 6.第三个监听器(Topic),监听发布/订阅模式
+	<bean id="itemAddMessageListener" 
+	class="cn.e3mall.search.message.ItemAddMessageListener">
+	</bean>
+	 -->
+	 <!-- 
+	<bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="topicDestination" />
+		<property name="messageListener" ref="itemAddMessageListener" />
+	</bean>
+    -->
+
+</beans>

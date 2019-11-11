@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<description>Spring Configuration</description>
+
+	<!-- 1、引入的配置属性文件 -->
+	<context:property-placeholder
+		ignore-unresolvable="true" location="classpath:config.properties" />
+
+	<!-- spring配置文件, -->
+	<!-- 2、spring希望管理所有的业务逻辑组件等 -->
+	<context:component-scan
+		base-package="com.okflow">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<!-- 配置连接数据库的数据源,使用BoneCP连接池 -->
+
+	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+		destroy-method="close">
+		<!-- 数据库驱动 -->
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<!-- 相应驱动的jdbcUrl -->
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<!-- 数据库的用户名 -->
+		<property name="username" value="${jdbc.username}" />
+		<!-- 数据库的密码 -->
+		<property name="password" value="${jdbc.password}" />
+		<!-- 检查数据库连接池中空闲连接的间隔时间，单位是分，默认值：240，如果要取消则设置为0 -->
+		<property name="idleConnectionTestPeriod"
+			value="${idleConnectionTestPeriod}" />
+		<!-- 连接池中未使用的链接最大存活时间，单位是分，默认值：60，如果要永远存活设置为0 -->
+		<property name="idleMaxAge" value="${idleMaxAge}" />
+		<!-- 每个分区最大的连接数 -->
+		<property name="maxConnectionsPerPartition"
+			value="${maxConnectionsPerPartition}" />
+		<!-- 每个分区最小的连接数 -->
+		<property name="minConnectionsPerPartition"
+			value="${minConnectionsPerPartition}" />
+	</bean>
+	<!-- 整合hibernate,创建一个 sessionFactory工厂 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="com.okflow" /><!-- 如果多个，用“,”分隔 -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>   <!--指定数据库方言 -->
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>     <!--在控制台显示执行的数据库操作语句 -->
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>     <!--在控制台显示执行的数据库操作语句（格式） -->
+				<prop key="hibernate.cache.use_second_level_cache">false</prop>
+				<prop key="hibernate.cache.use_query_cache">false</prop>
+				<prop key="hibernate.search.default.directory_provider">filesystem</prop>
+                <!--hibernate根据实体自动生成数据库表   -->
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop> 
+              
+			</props>
+		</property>
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</property>
+	</bean>
+
+	<!-- 配置声明式事务管理器 -->
+	<!-- 事务配置 声明式事务 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 启用事务注解 -->
+	<tx:annotation-driven
+		transaction-manager="transactionManager" />
+
+	<!-- 配置 JSR303 Bean Validator 定义 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+	<!-- 引入spring-data-redis.xml
+	<import resource="spring-data-redis.xml" />
+     -->
+	<!-- 引入ActiveMQ -->
+	<import resource="spring-activemq-producer.xml" />
+	<import resource="spring-activemq-consumer.xml" />
+
+	<!-- ehcache缓存配置 <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"> 
+		<property name="configLocation" value="classpath:${ehcache.configFile}" /> 
+		</bean> -->
+	<!-- spring cache缓存配置 ,需要时启动 <context:annotation-config/> <cache:annotation-driven/> 
+		<bean id="springCacheManager" class="org.springframework.cache.support.SimpleCacheManager"> 
+		<property name="caches"> <set> <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"> 
+		<property name="name" value="default"/> </bean> <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"> 
+		<property name="name" value="accountCache"/> </bean> </set> </property> </bean> -->
+
+
+
+
+</beans>
