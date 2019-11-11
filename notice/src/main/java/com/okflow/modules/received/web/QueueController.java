@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.okflow.common.utils.ImportExcelUtils;
 import com.okflow.middleware.activitymq.ProducerService;
+import com.okflow.middleware.redis.RedisCache;
 import com.okflow.modules.received.service.YbUserService;
 
 /**
@@ -35,6 +36,8 @@ public class QueueController {
 	private Destination destination;
 	@Autowired
 	private YbUserService ybUserService;
+	@Autowired
+	private RedisCache redisCache;
 
 	@RequestMapping(value = { "tokenUrl" })
 	public String tokenUrl() {
@@ -66,15 +69,16 @@ public class QueueController {
 
 	@RequestMapping(value = { "studentImport" })
 	public String studentImport(@RequestParam(value = "file", required = true) MultipartFile file,
-			HttpServletRequest request) {//学生数据导入
+			HttpServletRequest request) {// 学生数据导入
 		System.out.println("文件名为:" + file.getOriginalFilename());
 		try {
 			String fileName = file.getOriginalFilename();
 			InputStream inputStream = file.getInputStream();
 			List<Map<String, Object>> sourceList = ImportExcelUtils.readExcel(fileName, inputStream);
 
-			ybUserService.impStuData(sourceList);
-			
+			redisCache.putListCache("stuImport", sourceList);
+			// ybUserService.impStuData(sourceList);
+
 			System.out.println("sourceList" + sourceList);
 		} catch (Exception e) {
 			e.printStackTrace();
