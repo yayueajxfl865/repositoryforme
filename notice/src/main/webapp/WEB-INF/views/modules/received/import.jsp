@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <%@ include file="/WEB-INF/views/include/layui.jsp"%>
 <!DOCTYPE html>
@@ -17,7 +17,7 @@
 			<i class="layui-icon">&#xe67c;</i>教职工导入
 		</button>
 	</div>
-<script type="text/javascript">
+	<script type="text/javascript">
 	layui.use('upload', function() {
 		var upload = layui.upload;
 		upload.render({
