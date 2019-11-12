@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -66,7 +67,11 @@ public class QueueController {
 	}
 
 	@RequestMapping(value = { "release" })
-	public String release() {// 通知发布
+	public String release(Model model) {// 通知发布
+		List<Tie> tList = tieService.findTieList();
+		if (tList.size() > 0) {
+			model.addAttribute("tList", tList);
+		}
 		return "modules/received/nextstep";
 	}
 
@@ -100,12 +105,14 @@ public class QueueController {
 	public String tieTree() {// 系别生成树
 		List<Map<String, Object>> jsonList = new ArrayList<Map<String, Object>>();
 		List<Tie> tList = tieService.findTieList();
+		System.out.println("tList" + tList.size());
 		for (Tie tie : tList) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("id", tie.getId());
 			map.put("text", tie.getName());
 			jsonList.add(map);
 		}
+		System.out.println("jsonList" + jsonList);
 		return JSON.toJSONString(jsonList);
 	}
 }
