@@ -8,6 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 
 /**
  * redis缓存操作
@@ -15,7 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @author luoshanxing
  * @version 2017-06-26
  */
-//@Component
+@Component
 public class RedisCache {
 	public final static String CAHCENAME = "niitcache";// 缓存名
 	public final static int CAHCETIME = 60;// 默认缓存时间 60S

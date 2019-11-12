@@ -27,7 +27,10 @@
 			exts : 'xls|xlsx',
 			field : 'file',
 			before: function(obj){ 
-			    layer.load(); 
+				layer.msg('正在上传...', {
+					  icon: 16
+					  ,shade: 0.01
+					});
 			},
 			done : function(res) {
 				layer.closeAll('loading');

@@ -26,7 +26,6 @@ public class YbUser extends IdEntity<YbUser> {
 	private String yb_userid;// 易班id
 	private String yb_realname;// 真实姓名
 	private String yb_identity;// 用户身份
-
 	private Claban claban;// 所属班级
 
 	public YbUser() {
