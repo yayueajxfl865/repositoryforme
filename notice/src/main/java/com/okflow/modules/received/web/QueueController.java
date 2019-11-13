@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.jms.Destination;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,10 @@ import com.alibaba.fastjson.JSON;
 import com.okflow.common.utils.ImportExcelUtils;
 import com.okflow.middleware.activitymq.ProducerService;
 import com.okflow.middleware.redis.RedisCache;
+import com.okflow.modules.received.entity.Claban;
 import com.okflow.modules.received.entity.Tie;
+import com.okflow.modules.received.entity.YbUser;
+import com.okflow.modules.received.service.ClabanService;
 import com.okflow.modules.received.service.TieService;
 import com.okflow.modules.received.service.YbUserService;
 
@@ -47,6 +51,8 @@ public class QueueController {
 	private RedisCache redisCache;
 	@Autowired
 	private TieService tieService;
+	@Autowired
+	private ClabanService clabanService;
 
 	@RequestMapping(value = { "tokenUrl" })
 	public String tokenUrl() {
@@ -68,10 +74,7 @@ public class QueueController {
 
 	@RequestMapping(value = { "release" })
 	public String release(Model model) {// 通知发布
-		List<Tie> tList = tieService.findTieList();
-		if (tList.size() > 0) {
-			model.addAttribute("tList", tList);
-		}
+
 		return "modules/received/nextstep";
 	}
 
@@ -114,5 +117,29 @@ public class QueueController {
 		}
 		System.out.println("jsonList" + jsonList);
 		return JSON.toJSONString(jsonList);
+	}
+
+	@RequestMapping(value = { "loadClaban" })
+	public String loadClaban(String tieId, Model model) {
+		if (StringUtils.isNotBlank(tieId)) {
+			Tie tie = tieService.get(tieId);
+			if (tie != null) {
+				List<Claban> claList = tie.getClaList();
+				model.addAttribute("claList", claList);
+			}
+		}
+		return "modules/received/nextstep";
+	}
+
+	@RequestMapping(value = { "loadStudent" })
+	public String loadStudent(String claId, Model model) {
+		if (StringUtils.isNotBlank(claId)) {
+			Claban claban = clabanService.get(claId);
+			if (claban != null) {
+				List<YbUser> userList = claban.getYbList();
+				model.addAttribute("userList", userList);
+			}
+		}
+		return "modules/received/student";
 	}
 }

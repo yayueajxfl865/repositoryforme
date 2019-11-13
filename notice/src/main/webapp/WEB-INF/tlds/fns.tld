@@ -19,4 +19,12 @@
     <function-signature>java.lang.String getAdminPath()</function-signature>
     <example>${fns:getAdminPath()}</example>
   </function>
+  
+  <function>
+    <description>获取所有系别</description>
+    <name>getTieList</name>
+    <function-class>com.okflow.modules.received.utils.QueueUtils</function-class>
+    <function-signature>java.util.List getTieList()</function-signature>
+    <example>${fns:getTieList()}</example>
+  </function>
 </taglib>

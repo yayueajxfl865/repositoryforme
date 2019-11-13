@@ -11,43 +11,60 @@
 <body>
 	<div>
 		<table class="layui-table">
+			<colgroup>
+				<col width="150">
+				<col width="200">
+			</colgroup>
 			<tbody>
-				<tr>
+				<tr style="height: 30px;">
 					<td>
 						<form class="layui-form" action="">
 							<div class="layui-form-item">
 								<div class="layui-input-inline">
-									<select name="city" lay-verify="required">
-										<c:forEach items="${tList }" var="t" varStatus="status">
-										<option value="${t.id }">${t.name }</option>
+									<select name="tieName" lay-verify="required" id="tieId">
+										<c:forEach items="${fns:getTieList()}" var="t" varStatus="status">
+											<option value="${t.id }">${t.name }</option>
 										</c:forEach>
 									</select>
 								</div>
 							</div>
 						</form>
 					</td>
-					<td>
-						<div>
-							<label>系别：</label><input id="dd" value=""
-								style="width: 155px; height: 28px;"> <input
-								type="hidden" value="" id="pantryId" name="pantryId">
-						</div>
-					</td>
+
 					<td><button type="button" class="layui-btn layui-btn-normal"
 							onclick="query()">查询</button></td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
+	<div>
+		<table class="layui-table">
+			<tbody>
+			<c:if test="${claList ne null||claList ne '' }"></c:if>
+			<c:forEach items="${claList }" var="c" varStatus="status">
+				<tr>
+					<td><span onclick="queryStu('${c.id}')">${c.name }</span></td>
+				</tr>
+			</c:forEach>
+			</tbody>
+		</table>
+
+	</div>
 	<script type="text/javascript">
 		$(function() {
-
+			layer.closeAll();
 		});
 		layui.use('form', function() {
 			var form = layui.form;
 		});
 		function query() {//查询
-			layer.alert('只想简单的提示');
+			layer.msg('正在在载...', { icon: 16 ,shade: 0.01});
+			var tieId=$("#tieId").val();
+			window.location.href="${ctx }/queue/queue/loadClaban?tieId="+tieId;
+		}
+		function queryStu(claId){//点击系别查询学生
+			layer.msg('正在加载...', { icon: 16 ,shade: 0.01});
+			window.location.href="${ctx }/queue/queue/loadStudent?claId="+claId;
 		}
 	</script>
 </body>

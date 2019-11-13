@@ -66,7 +66,7 @@ public class Tie extends IdEntity<Tie> {
 		this.number = number;
 	}
 
-	@OneToMany(mappedBy = "tie", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "tie", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@OrderBy(value = "id")
 	@Fetch(FetchMode.SUBSELECT)
 	@NotFound(action = NotFoundAction.IGNORE)

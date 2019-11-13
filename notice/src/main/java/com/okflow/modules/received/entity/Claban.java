@@ -84,7 +84,7 @@ public class Claban extends IdEntity<Claban> {
 		this.tie = tie;
 	}
 
-	@OneToMany(mappedBy = "claban", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "claban", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@OrderBy(value = "id")
 	@Fetch(FetchMode.SUBSELECT)
 	@NotFound(action = NotFoundAction.IGNORE)

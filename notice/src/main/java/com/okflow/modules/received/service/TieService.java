@@ -25,4 +25,8 @@ public class TieService {
 	public List<Tie> findTieList() {
 		return tieDao.findTieList();
 	}
+
+	public Tie get(String id) {
+		return tieDao.get(id);
+	}
 }
