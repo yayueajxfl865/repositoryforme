@@ -142,4 +142,9 @@ public class QueueController {
 		}
 		return "modules/received/student";
 	}
+	@RequestMapping(value= {"loginQueue"})
+	public String loginQueue(String[] indexs) {//选择人员之后的下一步
+		System.out.println("indexs="+indexs);
+		return "modules/received/page";
+	}
 }
