@@ -39,9 +39,19 @@ import com.okflow.common.persistence.IdEntity;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Message extends IdEntity<Message> {
 	private static final long serialVersionUID = 1L;
-	private String content;// 消息内容
-	private Producer producer;//消息生产者
+	private Producer producer;// 消息生产者
 	private List<Consumer> conList = Lists.newArrayList();// 一条消息有多个消费者
+	private String theme;// 消息主题
+	private String content;// 消息内容
+
+	@Length(min = 0, max = 100)
+	public String getTheme() {
+		return theme;
+	}
+
+	public void setTheme(String theme) {
+		this.theme = theme;
+	}
 
 	@Length(min = 0, max = 1000)
 	public String getContent() {
@@ -75,6 +85,11 @@ public class Message extends IdEntity<Message> {
 
 	public void setConList(List<Consumer> conList) {
 		this.conList = conList;
+	}
+
+	@Override
+	public String toString() {
+		return "Message [theme=" + theme + ", content=" + content + "]";
 	}
 
 }

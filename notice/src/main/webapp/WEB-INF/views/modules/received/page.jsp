@@ -21,8 +21,8 @@
 	   layer.closeAll();
    })
    function formComit(){//消息表单提交
-	   i = layer.msg("系统正在添加至消息队列，请稍候...", {icon: 16,rate: 'top',time: 0});
-	   var action="";
+	   i = layer.msg("系统正在发送消息队列，请稍候...", {icon: 16,rate: 'top',time: 0});
+	   var action="${ctx}/queue/queue/sendMessage";
 	   $("#pro_form").attr("action",action).submit();
    }
 </script>
@@ -38,7 +38,7 @@
 						<label>标题：</label>
 					</div>
 					<div class="field">
-						<input type="text" class="input" name="title" value="" />
+						<input type="text" class="input" name="theme" value="" />
 						<div class="tips"></div>
 					</div>
 				</div>
@@ -56,7 +56,7 @@
 						<label></label>
 					</div>
 					<div class="field">
-						<button class="button bg-main icon-check-square-o" type="button" onclick="formComit">提交</button>
+						<button class="button bg-main icon-check-square-o" type="button" onclick="formComit()">提交</button>
 					</div>
 				</div>
 			</form>

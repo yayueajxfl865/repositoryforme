@@ -24,6 +24,7 @@ import com.okflow.common.utils.ImportExcelUtils;
 import com.okflow.middleware.activitymq.ProducerService;
 import com.okflow.middleware.redis.RedisCache;
 import com.okflow.modules.received.entity.Claban;
+import com.okflow.modules.received.entity.Message;
 import com.okflow.modules.received.entity.Tie;
 import com.okflow.modules.received.entity.YbUser;
 import com.okflow.modules.received.service.ClabanService;
@@ -91,7 +92,6 @@ public class QueueController {
 			String fileName = file.getOriginalFilename();
 			InputStream inputStream = file.getInputStream();
 			List<Map<String, Object>> sourceList = ImportExcelUtils.readExcel(fileName, inputStream);
-
 			// redisCache.putListCache("stuImport", sourceList);
 			ybUserService.impStuData(sourceList);
 
@@ -133,6 +133,7 @@ public class QueueController {
 
 	@RequestMapping(value = { "loadStudent" })
 	public String loadStudent(String claId, Model model) {
+		System.out.println("claId"+claId);
 		if (StringUtils.isNotBlank(claId)) {
 			Claban claban = clabanService.get(claId);
 			if (claban != null) {
@@ -145,8 +146,10 @@ public class QueueController {
 
 	@RequestMapping(value = { "candidate" })
 	public String loginQueue(String[] indexs, Model model) {// 选择人员之后的下一步
+		System.out.println("shifouzhixing");
 		String indexStr = StringUtils.join(indexs, ",");
 		model.addAttribute("indexStr", indexStr);
+		System.out.println("indexStr"+indexStr);
 		return "modules/received/page";
 	}
 
@@ -163,5 +166,11 @@ public class QueueController {
 			}
 		}
 		return JSON.toJSONString(map);
+	}
+	@RequestMapping(value= {"sendMessage"})
+	public String sendMessage(Message message,String indexStr) {//发送消息
+		System.out.println("message"=message);
+		System.out.println("indexStr"+indexStr);
+		return null;
 	}
 }
