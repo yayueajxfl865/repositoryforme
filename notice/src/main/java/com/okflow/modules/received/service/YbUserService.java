@@ -68,6 +68,10 @@ public class YbUserService {
 			ybUser.setClaban(claban);
 			ybUserDao.save(ybUser);// 保存人员
 		}
+	}
 
+	@Transactional(readOnly = false, timeout = 240)
+	public int delete(String id) {
+		return ybUserDao.deleteById(id);
 	}
 }

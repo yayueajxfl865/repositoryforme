@@ -142,9 +142,26 @@ public class QueueController {
 		}
 		return "modules/received/student";
 	}
-	@RequestMapping(value= {"loginQueue"})
-	public String loginQueue(String[] indexs) {//选择人员之后的下一步
-		System.out.println("indexs="+indexs);
+
+	@RequestMapping(value = { "candidate" })
+	public String loginQueue(String[] indexs, Model model) {// 选择人员之后的下一步
+		String indexStr = StringUtils.join(indexs, ",");
+		model.addAttribute("indexStr", indexStr);
 		return "modules/received/page";
+	}
+
+	@RequestMapping(value = { "deleteStu" })
+	@ResponseBody
+	public String deleteStu(String id) {// 删除指定学生
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (StringUtils.isNotBlank(id)) {
+			int rows = ybUserService.delete(id);
+			if (rows > 0) {
+				map.put("status", "200");
+			} else {
+				map.put("status", "100");
+			}
+		}
+		return JSON.toJSONString(map);
 	}
 }

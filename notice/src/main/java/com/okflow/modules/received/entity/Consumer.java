@@ -1,13 +1,20 @@
 package com.okflow.modules.received.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.okflow.common.persistence.IdEntity;
 
 /**
@@ -27,7 +34,31 @@ public class Consumer extends IdEntity<Consumer> {
 	private String yb_userid;// 易班ID
 	private String yb_username;// 易班用户名
 	private String yb_realname;// 真实姓名
+	private Message message;// 消息
+	private String status;// 查看状态(1为已查看状态)
 
+	@Length(min = 0, max = 1)
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "message_id")
+	@NotFound(action = NotFoundAction.IGNORE)
+	@JsonIgnore
+	public Message getMessage() {
+		return message;
+	}
+
+	public void setMessage(Message message) {
+		this.message = message;
+	}
+
+	@Length(min = 0, max = 128)
 	public String getYb_userid() {
 		return yb_userid;
 	}
@@ -36,6 +67,7 @@ public class Consumer extends IdEntity<Consumer> {
 		this.yb_userid = yb_userid;
 	}
 
+	@Length(min = 0, max = 64)
 	public String getYb_username() {
 		return yb_username;
 	}
@@ -44,6 +76,7 @@ public class Consumer extends IdEntity<Consumer> {
 		this.yb_username = yb_username;
 	}
 
+	@Length(min = 0, max = 20)
 	public String getYb_realname() {
 		return yb_realname;
 	}

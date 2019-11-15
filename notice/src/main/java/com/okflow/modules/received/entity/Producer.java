@@ -17,6 +17,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.validator.constraints.Length;
 
 import com.beust.jcommander.internal.Lists;
 import com.okflow.common.persistence.IdEntity;
@@ -39,24 +40,34 @@ public class Producer extends IdEntity<Producer> {
 	private String yb_username;// 易班用户名
 	private String yb_realname;// 真实姓名
 	private List<Message> messageList = Lists.newArrayList();// 生产者消息
+
+	@Length(min = 0, max = 128)
 	public String getYb_userid() {
 		return yb_userid;
 	}
+
 	public void setYb_userid(String yb_userid) {
 		this.yb_userid = yb_userid;
 	}
+
+	@Length(min = 0, max = 64)
 	public String getYb_username() {
 		return yb_username;
 	}
+
 	public void setYb_username(String yb_username) {
 		this.yb_username = yb_username;
 	}
+
+	@Length(min = 0, max = 20)
 	public String getYb_realname() {
 		return yb_realname;
 	}
+
 	public void setYb_realname(String yb_realname) {
 		this.yb_realname = yb_realname;
 	}
+
 	@OneToMany(mappedBy = "producer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@OrderBy(value = "id")
 	@Fetch(FetchMode.SUBSELECT)
@@ -65,10 +76,9 @@ public class Producer extends IdEntity<Producer> {
 	public List<Message> getMessageList() {
 		return messageList;
 	}
+
 	public void setMessageList(List<Message> messageList) {
 		this.messageList = messageList;
 	}
-	
-	
 
 }
