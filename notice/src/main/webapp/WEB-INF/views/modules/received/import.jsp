@@ -7,18 +7,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-</head>
-<body>
-	<div>
-		<button type="button" class="layui-btn" id="student">
-			<i class="layui-icon">&#xe67c;</i>学生导入
-		</button>
-		<button type="button" class="layui-btn" id="teacher">
-			<i class="layui-icon">&#xe67c;</i>教职工导入
-		</button>
-	</div>
-	<script type="text/javascript">
-	layui.use('upload', function() {
+<script type="text/javascript">
+	layui.use('upload', function() {//学生导入
 		var upload = layui.upload;
 		upload.render({
 			elem : '#student',
@@ -27,24 +17,25 @@
 			exts : 'xls|xlsx',
 			field : 'file',
 			before: function(obj){ 
-				layer.msg('正在上传...', {
-					  icon: 16
-					  ,shade: 0.01
-					});
+				i = layer.msg("正在导出，请稍候...", {icon: 16,rate: 'top',time: 0});
+				$("#layerindex").val(i);
 			},
 			done : function(res) {
-				layer.closeAll('loading');
-			}
-		});
-		upload.render({
-			elem : '#teacher',
-			url : '/upload/',
-			accept : 'file' ,
-			done : function(res) {
-				console.log(res)
+				layer.close($("#layerindex").val());
 			}
 		});
 	});
 </script>
+</head>
+<body>
+    <input type="hidden" id="layerindex" />
+	<div>
+		<button type="button" class="layui-btn" id="student">
+			<i class="layui-icon">&#xe67c;</i>学生导入
+		</button>
+		<button type="button" class="layui-btn" id="teacher">
+			<i class="layui-icon">&#xe67c;</i>教职工导入
+		</button>
+	</div>
 </body>
 </html>

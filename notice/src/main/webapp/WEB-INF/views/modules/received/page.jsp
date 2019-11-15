@@ -16,14 +16,24 @@
 <script src="${ctxStatic }/lanseUI/js/jquery.js"></script>
 <script src="${ctxStatic }/lanseUI/js/pintuer.js"></script>
 </head>
+<script type="text/javascript">
+   $(function(){
+	   layer.closeAll();
+   })
+   function formComit(){//消息表单提交
+	   i = layer.msg("系统正在添加至消息队列，请稍候...", {icon: 16,rate: 'top',time: 0});
+	   var action="";
+	   $("#pro_form").attr("action",action).submit();
+   }
+</script>
 <body>
 	<div class="panel admin-panel">
 		<div class="panel-head">
 			<strong><span class="icon-pencil-square-o"></span>发布通知</strong>
 		</div>
 		<div class="body-content">
-			<form method="post" class="form-x" action="">
-				<div class="form-group">
+			<form method="post" class="form-x" id="pro_form" action=""> <div class="form-group">
+				    <input type="hidden" value="${indexStr }" name="indexStr" id="indexStr">
 					<div class="label">
 						<label>标题：</label>
 					</div>
@@ -46,8 +56,7 @@
 						<label></label>
 					</div>
 					<div class="field">
-						<button class="button bg-main icon-check-square-o" type="submit">
-							提交</button>
+						<button class="button bg-main icon-check-square-o" type="button" onclick="formComit">提交</button>
 					</div>
 				</div>
 			</form>

@@ -9,7 +9,6 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="${ctxStatic }/lanseUI/css/pintuer.css">
 <link rel="stylesheet" href="${ctxStatic }/lanseUI/css/admin.css">
-<script src="${ctxStatic }/lanseUI/js/pintuer.js"></script>
 </head>
 <style>
 input[type=checkbox]:after  {
@@ -44,8 +43,7 @@ input[type=checkbox]:after  {
 		});
 	}
 	function nextTep() {//下一步
-		window.location.href = "${ctx }/queue/queue/loginQueue?indexs="+ indexs;
-		var indexs = []; // 存放选中的人员信息记录的下标
+		var indexs = new Array(); // 存放选中的人员信息记录的下标
 		var flag = false;
 		$("input[name='chek[]']").each(function() {
 			if (this.checked) {
@@ -55,53 +53,89 @@ input[type=checkbox]:after  {
 			}
 		});
 		if (flag) {
-			alert("haha");
-			//layer.msg('正在加载...', { icon: 16 ,shade: 0.01});
-			window.location.href = "${ctx }/queue/queue/loginQueue?indexs="+ indexs;
+			i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
+			window.location.href="${ctx }/queue/queue/candidate?indexs="+indexs;
 		}
 		else{
-			layer.alert('请选择人员');
+			layer.msg('请选择人员!', {icon: 0}); 
 			return false;
 		}
+		
+	}
+	function deleteStu(id){//删除学生
+		$.ajax({
+			url:"${ctx}/queue/queue/deleteStu/?id="+id,
+			type:"post",
+			async:false,
+			success:function(result){
+				var code = $.parseJSON(result);
+				if(code.status=="100"){
+					layer.msg('删除失败!', {icon: 2}); 
+				}
+				else if(code.status=="200"){
+					//删除成功
+					layer.msg('删除失败!', {icon: 1}); 
+		    		$("#tr_"+id).remove();
+				}
+			},
+			error:function(e){
+				layer.msg('删除失败!', {icon: 2}); 
+			}
+		});
+		
 	}
 </script>
 <body>
+    <input type="hidden" id="layerindex" />
 	<form method="post" action="">
-  <div class="panel admin-panel">
-    <div class="panel-head"><strong class="icon-reorder">学生管理</strong></div>
-    <div class="padding border-bottom">
-      <ul class="search">
-        <li>
-          <button type="button"  class="button border-green" onclick="checkall()"><span class="icon-check"></span> 全选</button>
-          
-          <button class="button bg-main icon-check-square-o" type="submit" onclick="nextTep()">下一步</button>
-       
-        </li>
-      </ul>
-    </div>
-    <table class="table table-hover text-center">
-      <tr>
-        <th width="50"></th>
-        <th>姓名</th>       
-        <th>班别</th>
-        <th>系别</th>
-        <th>操作</th>       
-      </tr>   
-      <c:forEach items="${userList }" var="u" varStatus="status">
-        <tr>
-          <td>
-          <input type="checkbox" name="chek[]" value="${u.yb_userid }" /></td>
-          <td>${u.yb_realname }</td>
-          <td>${u.claban.name }</td>
-          <td>${u.claban.tie.name }</td>  
-          <td><div class="button-group"> <a class="button border-red" href="javascript:void(0)" onclick="return del(1)"><span class="icon-trash-o"></span> 删除</a> </div></td>
-        </tr>
-       </c:forEach>   
-      <tr>
-        <td colspan="8"><div class="pagelist"> <a href="">上一页</a> <span class="current">1</span><a href="">2</a><a href="">3</a><a href="">下一页</a><a href="">尾页</a> </div></td>
-      </tr>
-    </table>
-  </div>
-</form>
+		<div class="panel admin-panel">
+			<div class="panel-head">
+				<strong class="icon-reorder">学生管理</strong>
+			</div>
+			<div class="padding border-bottom">
+				<ul class="search">
+					<li>
+						<button type="button" class="button border-green"
+							onclick="checkall()">
+							<span class="icon-check"></span> 全选
+						</button>
+
+						<button class="button bg-main icon-check-square-o" type="button"
+							onclick="nextTep()">下一步</button>
+
+					</li>
+				</ul>
+			</div>
+			<table class="table table-hover text-center">
+				<tr>
+					<th width="50"></th>
+					<th>姓名</th>
+					<th>班别</th>
+					<th>系别</th>
+					<th>操作</th>
+				</tr>
+				<c:forEach items="${userList }" var="u" varStatus="status">
+					<tr id="tr_${u.id }">
+						<td><input type="checkbox" name="chek[]"
+							value="${u.yb_userid }" /></td>
+						<td>${u.yb_realname }</td>
+						<td>${u.claban.name }</td>
+						<td>${u.claban.tie.name }</td>
+						<td><div class="button-group">
+								<a class="button border-red" href="javascript:void(0)"
+									onclick="deleteStu('${u.id}')"><span class="icon-trash-o"></span>
+									删除</a>
+							</div></td>
+					</tr>
+				</c:forEach>
+				<tr>
+					<td colspan="8"><div class="pagelist">
+							<a href="">上一页</a> <span class="current">1</span><a href="">2</a><a
+								href="">3</a><a href="">下一页</a><a href="">尾页</a>
+						</div></td>
+				</tr>
+			</table>
+		</div>
+	</form>
 </body>
 </html>
