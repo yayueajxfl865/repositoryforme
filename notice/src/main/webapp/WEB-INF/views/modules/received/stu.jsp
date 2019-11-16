@@ -54,7 +54,7 @@ input[type=checkbox]:after  {
 		});
 		if (flag) {
 			i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
-			window.location.href="${ctx }/queue/queue/candidate?indexs="+indexs;
+			window.location.href="${ctx }/queue/queue/arrComit?indexs="+indexs;
 		}
 		else{
 			layer.msg('请选择人员!', {icon: 0}); 

@@ -133,7 +133,7 @@ public class QueueController {
 
 	@RequestMapping(value = { "loadStudent" })
 	public String loadStudent(String claId, Model model) {
-		System.out.println("claId"+claId);
+		System.out.println("claId" + claId);
 		if (StringUtils.isNotBlank(claId)) {
 			Claban claban = clabanService.get(claId);
 			if (claban != null) {
@@ -141,21 +141,20 @@ public class QueueController {
 				model.addAttribute("userList", userList);
 			}
 		}
-		return "modules/received/student";
+		return "modules/received/stu";
 	}
 
 	@RequestMapping(value = { "candidate" })
 	public String loginQueue(String[] indexs, Model model) {// 选择人员之后的下一步
-		System.out.println("shifouzhixing");
 		String indexStr = StringUtils.join(indexs, ",");
 		model.addAttribute("indexStr", indexStr);
-		System.out.println("indexStr"+indexStr);
 		return "modules/received/page";
 	}
 
 	@RequestMapping(value = { "deleteStu" })
 	@ResponseBody
 	public String deleteStu(String id) {// 删除指定学生
+		System.out.println("删除id" + id);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (StringUtils.isNotBlank(id)) {
 			int rows = ybUserService.delete(id);
@@ -167,10 +166,18 @@ public class QueueController {
 		}
 		return JSON.toJSONString(map);
 	}
-	@RequestMapping(value= {"sendMessage"})
-	public String sendMessage(Message message,String indexStr) {//发送消息
-		System.out.println("message"=message);
-		System.out.println("indexStr"+indexStr);
+
+	@RequestMapping(value = { "sendMessage" })
+	public String sendMessage(Message message, String indexStr) {// 发送消息
+		System.out.println("message" + message);
+		System.out.println("indexStr" + indexStr);
 		return null;
+	}
+
+	@RequestMapping(value = "/arrComit")
+	public String arrComit(String[] indexs, Model model) {
+		String indexStr = StringUtils.join(indexs, ",");
+		model.addAttribute("indexStr", indexStr);
+		return "modules/received/page";
 	}
 }
