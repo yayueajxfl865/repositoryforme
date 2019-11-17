@@ -41,6 +41,7 @@
     <!-- 4、配置直接转发的页面  --> 
     <mvc:view-controller path="${web.view.index}/login" view-name="layouts/login"/>
     <mvc:view-controller path="${web.view.index}/index" view-name="modules/received/index"/>
+    <mvc:view-controller path="${web.view.index}/userMessage" view-name="modules/received/userMessage"/>
      <!-- 5、定义无Controller的path<->view直接映射 
 	<mvc:view-controller path="/" view-name="redirect:${web.view.index}"/>
      -->
