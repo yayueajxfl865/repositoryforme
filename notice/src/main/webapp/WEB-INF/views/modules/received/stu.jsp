@@ -63,24 +63,27 @@ input[type=checkbox]:after  {
 		
 	}
 	function deleteStu(id){//删除学生
-		$.ajax({
-			url:"${ctx}/queue/queue/deleteStu/?id="+id,
-			type:"post",
-			async:false,
-			success:function(result){
-				var code = $.parseJSON(result);
-				if(code.status=="100"){
+		layer.confirm('该操作可能会导致系统队列异常,是否确定删除该人员?', {icon: 0, title:'系统提示',shade: [0.1, '#117FBA']}, function(index){
+			i = layer.msg("正在执行删除...", {icon: 16,rate: 'top',time: 0});
+			$("#layerindex").val(i);
+			$.ajax({
+				url:"${ctx}/queue/queue/deleteStu/?id="+id,
+				type:"post",
+				async:false,
+				success:function(result){
+					var code = $.parseJSON(result);
+					if(code.status=="100"){
+						layer.msg('该人员正处于系统队列中,无法删除!', {icon: 2}); 
+					}
+					else if(code.status=="200"){
+						layer.msg('删除成功!', {icon: 1}); //删除成功
+			    		$("#tr_"+id).remove();
+					}
+				},
+				error:function(e){
 					layer.msg('删除失败!', {icon: 2}); 
 				}
-				else if(code.status=="200"){
-					//删除成功
-					layer.msg('删除失败!', {icon: 1}); 
-		    		$("#tr_"+id).remove();
-				}
-			},
-			error:function(e){
-				layer.msg('删除失败!', {icon: 2}); 
-			}
+			});
 		});
 		
 	}

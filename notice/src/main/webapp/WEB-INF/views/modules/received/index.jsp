@@ -23,9 +23,7 @@
 					class="radius-circle rotate-hover" height="50" alt="" />易班通知发布系统
 			</h1>
 		</div>
-		<%--
-   <div class="head-l"><a class="button button-little bg-green" href="" target="_blank"><span class="icon-home"></span> 前台首页</a> &nbsp;&nbsp;<a href="##" class="button button-little bg-blue"><span class="icon-wrench"></span> 清除缓存</a> &nbsp;&nbsp;<a class="button button-little bg-red" href="login.html"><span class="icon-power-off"></span> 退出登录</a> </div>
-   --%>
+   <div class="head-l"><a class="button button-little bg-green" href="" target="_blank"><span class="icon-home"></span>系统首页</a> &nbsp;&nbsp;<a href="##" class="button button-little bg-blue"><span class="icon-wrench"></span> 清除缓存</a> &nbsp;&nbsp;<a class="button button-little bg-red" href="login.html"><span class="icon-power-off"></span> 退出登录</a> </div>
 	</div>
 	<div class="leftnav">
 		<div class="leftnav-title">
@@ -54,17 +52,20 @@
 					class="icon-caret-right"></span>基础数据</a></li>
 		</ul>
 	</div>
-	<script type="text/javascript">
+<script type="text/javascript">
 $(function(){
-  $(".leftnav h2").click(function(){
-	  $(this).next().slideToggle(200);	
-	  $(this).toggleClass("on"); 
-  })
-  $(".leftnav ul li a").click(function(){
-	    $("#a_leader_txt").text($(this).text());
-  		$(".leftnav ul li a").removeClass("on");
-		$(this).addClass("on");
-  })
+	//i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
+	var src="${ctx }/queue/queue/indexIcon";
+	$("#index-icon").attr("src",src);
+	$(".leftnav h2").click(function(){
+		  $(this).next().slideToggle(200);	
+		  $(this).toggleClass("on"); 
+	})
+	$(".leftnav ul li a").click(function(){
+		  $("#a_leader_txt").text($(this).text());
+	  	  $(".leftnav ul li a").removeClass("on");
+		  $(this).addClass("on");
+     })
 });
 </script>
 	<ul class="bread">
@@ -76,7 +77,7 @@ $(function(){
 			href="##">英文</a></li>
 	</ul>
 	<div class="admin">
-		<iframe scrolling="auto" rameborder="0" src="" name="right"
+		<iframe scrolling="auto" rameborder="0" src="" name="right" id="index-icon"
 			width="100%" height="100%"></iframe>
 	</div>
 	<div style="text-align: center;"></div>
