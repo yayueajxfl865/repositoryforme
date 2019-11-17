@@ -33,16 +33,56 @@ import com.okflow.common.persistence.IdEntity;
  */
 
 @Entity
-@Table(name = "mq_message")
+@Table(name = "mq_imessage")
 @DynamicInsert
 @DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Message extends IdEntity<Message> {
+public class Imessage extends IdEntity<Imessage> {
 	private static final long serialVersionUID = 1L;
 	private Producer producer;// 消息生产者
 	private List<Consumer> conList = Lists.newArrayList();// 一条消息有多个消费者
 	private String theme;// 消息主题
 	private String content;// 消息内容
+	private String state;// 消息类型
+	private String fszt;// 发送状态
+	private String recall;// 撤回操作
+	private String rever;// 接收者简介
+
+	@Length(min = 0, max = 100)
+	public String getRever() {
+		return rever;
+	}
+
+	public void setRever(String rever) {
+		this.rever = rever;
+	}
+
+	@Length(min = 0, max = 2)
+	public String getRecall() {
+		return recall;
+	}
+
+	public void setRecall(String recall) {
+		this.recall = recall;
+	}
+
+	@Length(min = 0, max = 2)
+	public String getFszt() {
+		return fszt;
+	}
+
+	public void setFszt(String fszt) {
+		this.fszt = fszt;
+	}
+
+	@Length(min = 0, max = 2)
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
 
 	@Length(min = 0, max = 100)
 	public String getTheme() {
@@ -74,7 +114,7 @@ public class Message extends IdEntity<Message> {
 		this.producer = producer;
 	}
 
-	@OneToMany(mappedBy = "message", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "imessage", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@OrderBy(value = "id")
 	@Fetch(FetchMode.SUBSELECT)
 	@NotFound(action = NotFoundAction.IGNORE)

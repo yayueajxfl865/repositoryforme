@@ -41,7 +41,7 @@ import com.okflow.common.utils.StringUtils;
  * DAO支持类实现
  * 
  * @author xiaofanglin
- * @version 
+ * @version
  * @param <T>
  */
 public class BaseDao<T> {
@@ -110,8 +110,7 @@ public class BaseDao<T> {
 			List<Object> list = query.list();
 			if (list.size() > 0) {
 				page.setCount(Long.valueOf(list.get(0).toString()));
-			}
-			else {
+			} else {
 				page.setCount(list.size());
 			}
 			if (page.getCount() < 1) {
@@ -223,8 +222,7 @@ public class BaseDao<T> {
 						break;
 					}
 				}
-			}
-			else {
+			} else {
 				for (Method method : entity.getClass().getMethods()) {
 					PreUpdate pu = method.getAnnotation(PreUpdate.class);
 					if (pu != null) {
@@ -293,7 +291,7 @@ public class BaseDao<T> {
 	 * @return
 	 */
 	public int deleteById(Serializable id) {
-		
+
 		return update("delete " + entityClass.getSimpleName() + " where id = :p1", new Parameter(id));
 	}
 
@@ -305,7 +303,8 @@ public class BaseDao<T> {
 	 * @return
 	 */
 	public int deleteById(Serializable id, String likeParentIds) {
-		return update("delete " + entityClass.getSimpleName() + " where id = :p1 or parentIds like :p2", new Parameter(id, likeParentIds));
+		return update("delete " + entityClass.getSimpleName() + " where id = :p1 or parentIds like :p2",
+				new Parameter(id, likeParentIds));
 	}
 
 	/**
@@ -315,6 +314,17 @@ public class BaseDao<T> {
 	 */
 	public void delete(T t) {
 		getSession().delete(t);
+	}
+
+	/**
+	 * 创建HQL的Query查询对象
+	 * 
+	 * @param qlString
+	 * @return
+	 */
+	public Query createQuery(String qlString) {
+		Query query = getSession().createQuery(qlString);
+		return query;
 	}
 
 	/**
@@ -383,8 +393,7 @@ public class BaseDao<T> {
 			List<Object> list = query.list();
 			if (list.size() > 0) {
 				page.setCount(Long.valueOf(list.get(0).toString()));
-			}
-			else {
+			} else {
 				page.setCount(list.size());
 			}
 			if (page.getCount() < 1) {
@@ -477,11 +486,9 @@ public class BaseDao<T> {
 		if (resultClass != null) {
 			if (resultClass == Map.class) {
 				query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-			}
-			else if (resultClass == List.class) {
+			} else if (resultClass == List.class) {
 				query.setResultTransformer(Transformers.TO_LIST);
-			}
-			else {
+			} else {
 				query.addEntity(resultClass);
 			}
 		}
@@ -500,11 +507,9 @@ public class BaseDao<T> {
 				Object value = parameter.get(string);
 				if (value instanceof Collection<?>) {
 					query.setParameterList(string, (Collection<?>) value);
-				}
-				else if (value instanceof Object[]) {
+				} else if (value instanceof Object[]) {
 					query.setParameterList(string, (Object[]) value);
-				}
-				else {
+				} else {
 					query.setParameter(string, value);
 				}
 			}
@@ -589,12 +594,10 @@ public class BaseDao<T> {
 				String[] o = StringUtils.split(order, " ");
 				if (o.length == 1) {
 					criteria.addOrder(Order.asc(o[0]));
-				}
-				else if (o.length == 2) {
+				} else if (o.length == 2) {
 					if ("DESC".equals(o[1].toUpperCase())) {
 						criteria.addOrder(Order.desc(o[0]));
-					}
-					else {
+					} else {
 						criteria.addOrder(Order.asc(o[0]));
 					}
 				}
@@ -663,8 +666,7 @@ public class BaseDao<T> {
 	/**
 	 * 创建与会话无关的检索标准对象
 	 * 
-	 * @param criterions
-	 *            Restrictions.eq("name", value);
+	 * @param criterions Restrictions.eq("name", value);
 	 * @return
 	 */
 	public DetachedCriteria createDetachedCriteria(Criterion... criterions) {

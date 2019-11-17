@@ -5,7 +5,9 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -39,7 +41,18 @@ public class Producer extends IdEntity<Producer> {
 	private String yb_userid;// 易班ID
 	private String yb_username;// 易班用户名
 	private String yb_realname;// 真实姓名
-	private List<Message> messageList = Lists.newArrayList();// 生产者消息
+	private YbUser ybUser;// 易班用户
+	private List<Imessage> messageList = Lists.newArrayList();// 生产者消息
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "yb_id")
+	public YbUser getYbUser() {
+		return ybUser;
+	}
+
+	public void setYbUser(YbUser ybUser) {
+		this.ybUser = ybUser;
+	}
 
 	@Length(min = 0, max = 128)
 	public String getYb_userid() {
@@ -73,11 +86,11 @@ public class Producer extends IdEntity<Producer> {
 	@Fetch(FetchMode.SUBSELECT)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-	public List<Message> getMessageList() {
+	public List<Imessage> getMessageList() {
 		return messageList;
 	}
 
-	public void setMessageList(List<Message> messageList) {
+	public void setMessageList(List<Imessage> messageList) {
 		this.messageList = messageList;
 	}
 

@@ -7,6 +7,9 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import javax.jms.TextMessage;
 
+import com.okflow.common.utils.SpringContextHolder;
+import com.okflow.modules.received.service.ImessageService;
+
 /**
  * 消费者服务类
  * 
@@ -15,6 +18,8 @@ import javax.jms.TextMessage;
  */
 public class QueueMessageListener implements MessageListener {
 
+	private static ImessageService imessageService = SpringContextHolder.getBean(ImessageService.class);
+
 	@Override
 	public void onMessage(Message message) {
 		if (message instanceof TextMessage) {
@@ -22,14 +27,22 @@ public class QueueMessageListener implements MessageListener {
 			try {
 				System.out.println("textMessage=" + textMessage.getText());
 			} catch (JMSException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
 		if (message instanceof MapMessage) {
 			MapMessage mapMessage = (MapMessage) message;
-			System.out.println("mapMessage=" + mapMessage);
+			try {
+				String producerKey = (String) mapMessage.getObject("producerKey");
+				String theme = (String) mapMessage.getObject("theme");
+				String content = (String) mapMessage.getObject("content");
+				String rever = (String) mapMessage.getObject("rever");
+				String consumerKey = (String) mapMessage.getObject("consumerKey");
+				imessageService.saveImessage(producerKey, theme, content, rever, consumerKey);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 		}
 

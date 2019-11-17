@@ -30,7 +30,6 @@ public class YbUser extends IdEntity<YbUser> {
 
 	public YbUser() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public YbUser(String yb_userid, String yb_realname, String yb_identity, Claban claban) {

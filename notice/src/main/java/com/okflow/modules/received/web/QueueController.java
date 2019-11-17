@@ -1,5 +1,6 @@
 package com.okflow.modules.received.web;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import javax.jms.Destination;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -20,16 +22,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
+import com.okflow.common.config.Global;
 import com.okflow.common.utils.ImportExcelUtils;
 import com.okflow.middleware.activitymq.ProducerService;
 import com.okflow.middleware.redis.RedisCache;
 import com.okflow.modules.received.entity.Claban;
-import com.okflow.modules.received.entity.Message;
+import com.okflow.modules.received.entity.Imessage;
 import com.okflow.modules.received.entity.Tie;
 import com.okflow.modules.received.entity.YbUser;
 import com.okflow.modules.received.service.ClabanService;
+import com.okflow.modules.received.service.ImessageService;
 import com.okflow.modules.received.service.TieService;
 import com.okflow.modules.received.service.YbUserService;
+import com.okflow.modules.received.utils.QueueUtils;
 
 /**
  * 消息队列Controller
@@ -54,6 +59,8 @@ public class QueueController {
 	private TieService tieService;
 	@Autowired
 	private ClabanService clabanService;
+	@Autowired
+	private ImessageService imessageService;
 
 	@RequestMapping(value = { "tokenUrl" })
 	public String tokenUrl() {
@@ -133,7 +140,6 @@ public class QueueController {
 
 	@RequestMapping(value = { "loadStudent" })
 	public String loadStudent(String claId, Model model) {
-		System.out.println("claId" + claId);
 		if (StringUtils.isNotBlank(claId)) {
 			Claban claban = clabanService.get(claId);
 			if (claban != null) {
@@ -168,10 +174,17 @@ public class QueueController {
 	}
 
 	@RequestMapping(value = { "sendMessage" })
-	public String sendMessage(Message message, String indexStr) {// 发送消息
-		System.out.println("message" + message);
-		System.out.println("indexStr" + indexStr);
-		return null;
+	public String sendMessage(Imessage imessage, String indexStr) throws JSONException, IOException {// 发送消息
+		Map<String, Object> map = new HashMap<String, Object>();
+		String producerKey = "9676068";// 消息生产者;
+		String rever = QueueUtils.getReverStr(indexStr);
+		map.put("producerKey", producerKey);
+		map.put("theme", imessage.getTheme());
+		map.put("content", imessage.getContent());
+		map.put("rever", rever);
+		map.put("consumerKey", indexStr);
+		producerService.sendMapMessage(destination, map);
+		return "redirect:" + Global.getAdminPath() + "/queue/queue/indexIcon";
 	}
 
 	@RequestMapping(value = "/arrComit")
@@ -179,5 +192,12 @@ public class QueueController {
 		String indexStr = StringUtils.join(indexs, ",");
 		model.addAttribute("indexStr", indexStr);
 		return "modules/received/page";
+	}
+
+	@RequestMapping(value = { "indexIcon" })
+	public String indexIcon(Model model) {
+		List<Imessage> messageList = imessageService.getMeNewsList();
+		model.addAttribute("messageList", messageList);
+		return "modules/received/index-icon";
 	}
 }

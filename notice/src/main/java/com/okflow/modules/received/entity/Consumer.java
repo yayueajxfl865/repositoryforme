@@ -34,7 +34,7 @@ public class Consumer extends IdEntity<Consumer> {
 	private String yb_userid;// 易班ID
 	private String yb_username;// 易班用户名
 	private String yb_realname;// 真实姓名
-	private Message message;// 消息
+	private Imessage imessage;// 消息
 	private String status;// 查看状态(1为已查看状态)
 
 	@Length(min = 0, max = 1)
@@ -47,15 +47,15 @@ public class Consumer extends IdEntity<Consumer> {
 	}
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "message_id")
+	@JoinColumn(name = "imessage_id")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@JsonIgnore
-	public Message getMessage() {
-		return message;
+	public Imessage getImessage() {
+		return imessage;
 	}
 
-	public void setMessage(Message message) {
-		this.message = message;
+	public void setImessage(Imessage imessage) {
+		this.imessage = imessage;
 	}
 
 	@Length(min = 0, max = 128)

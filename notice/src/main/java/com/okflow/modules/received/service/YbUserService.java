@@ -74,4 +74,8 @@ public class YbUserService {
 	public int delete(String id) {
 		return ybUserDao.deleteById(id);
 	}
+
+	public List<YbUser> findStuList(String yb_userid) {
+		return ybUserDao.findStuList(yb_userid);
+	}
 }
