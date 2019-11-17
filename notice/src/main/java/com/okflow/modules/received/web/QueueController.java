@@ -22,11 +22,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.okflow.common.config.Global;
 import com.okflow.common.utils.ImportExcelUtils;
 import com.okflow.middleware.activitymq.ProducerService;
 import com.okflow.middleware.redis.RedisCache;
 import com.okflow.modules.received.entity.Claban;
+import com.okflow.modules.received.entity.Consumer;
 import com.okflow.modules.received.entity.Imessage;
 import com.okflow.modules.received.entity.Tie;
 import com.okflow.modules.received.entity.YbUser;
@@ -176,14 +178,17 @@ public class QueueController {
 	@RequestMapping(value = { "sendMessage" })
 	public String sendMessage(Imessage imessage, String indexStr) throws JSONException, IOException {// 发送消息
 		Map<String, Object> map = new HashMap<String, Object>();
-		String producerKey = "9676068";// 消息生产者;
+		String producerKey = "31253280";// 消息生产者;
 		String rever = QueueUtils.getReverStr(indexStr);
-		map.put("producerKey", producerKey);
-		map.put("theme", imessage.getTheme());
-		map.put("content", imessage.getContent());
-		map.put("rever", rever);
-		map.put("consumerKey", indexStr);
-		producerService.sendMapMessage(destination, map);
+		/**
+		 * 暂不存消息队列 map.put("producerKey", producerKey); map.put("theme",
+		 * imessage.getTheme()); map.put("content", imessage.getContent());
+		 * map.put("rever", rever); map.put("consumerKey", indexStr);
+		 * 
+		 * 
+		 * producerService.sendMapMessage(destination, map);
+		 */
+		imessageService.saveImessage(producerKey, imessage.getTheme(), imessage.getContent(), rever, indexStr);
 		return "redirect:" + Global.getAdminPath() + "/queue/queue/indexIcon";
 	}
 
@@ -199,5 +204,30 @@ public class QueueController {
 		List<Imessage> messageList = imessageService.getMeNewsList();
 		model.addAttribute("messageList", messageList);
 		return "modules/received/index-icon";
+	}
+
+	@RequestMapping(value = { "lookMessage" })
+	public String lookMessage(String id, Model model) {
+		if (StringUtils.isNotBlank(id)) {
+			Imessage imessage = imessageService.get(id);
+			model.addAttribute("imessage", imessage);
+		}
+		return "modules/received/lookMessage";
+	}
+
+	@RequestMapping(value = { "userMessage" })
+	public String userMessage() {// 用户列表
+		return "modules/received/userMessage";
+	}
+
+	@RequestMapping(value = { "csmDetails" })
+	public String csmDetails(String id, Model model) {
+		if (StringUtils.isNotBlank(id)) {
+			Imessage imessage = imessageService.get(id);
+			List<Consumer> mList = imessage.getConList();
+			model.addAttribute("mList", mList);
+		}
+		return "modules/received/consumerDetails";
+
 	}
 }

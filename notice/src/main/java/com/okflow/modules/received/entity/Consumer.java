@@ -4,6 +4,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -36,6 +37,27 @@ public class Consumer extends IdEntity<Consumer> {
 	private String yb_realname;// 真实姓名
 	private Imessage imessage;// 消息
 	private String status;// 查看状态(1为已查看状态)
+	private String state;// 是否撤回
+	private YbUser ybUser;// 易班用户
+
+	@Length(min = 0, max = 2)
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "yb_id")
+	public YbUser getYbUser() {
+		return ybUser;
+	}
+
+	public void setYbUser(YbUser ybUser) {
+		this.ybUser = ybUser;
+	}
 
 	@Length(min = 0, max = 1)
 	public String getStatus() {
