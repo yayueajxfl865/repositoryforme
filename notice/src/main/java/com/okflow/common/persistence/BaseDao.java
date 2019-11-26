@@ -296,6 +296,15 @@ public class BaseDao<T> {
 	}
 
 	/**
+	 * 
+	 * @param ids
+	 * @return
+	 */
+	public int deleteByIds(List<String> ids) {
+		return update("delete " + entityClass.getSimpleName() + " where id in(:p1)", new Parameter(ids));
+	}
+
+	/**
 	 * 删除
 	 * 
 	 * @param id

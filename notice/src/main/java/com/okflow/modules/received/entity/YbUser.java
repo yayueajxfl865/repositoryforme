@@ -27,6 +27,7 @@ public class YbUser extends IdEntity<YbUser> {
 	private String yb_realname;// 真实姓名
 	private String yb_identity;// 用户身份
 	private Claban claban;// 所属班级
+	private String role;// 所属角色
 
 	public YbUser() {
 		super();
@@ -38,6 +39,14 @@ public class YbUser extends IdEntity<YbUser> {
 		this.yb_realname = yb_realname;
 		this.yb_identity = yb_identity;
 		this.claban = claban;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public String getYb_userid() {

@@ -2,6 +2,8 @@ package com.okflow.modules.received.utils;
 
 public class AppUtil {
 
+	public static final String USER_SESSION = "USER_SESSION";
+
 	public static final String AppID = "a62716f60e3bcb32";
 
 	public static final String AppSECRET = "28256ae29f354a2ca51a1f64c3645568";

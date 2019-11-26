@@ -11,7 +11,6 @@ import javax.jms.Destination;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.okflow.common.config.Global;
 import com.okflow.common.utils.ImportExcelUtils;
 import com.okflow.middleware.activitymq.ProducerService;
@@ -85,6 +83,11 @@ public class QueueController {
 	@RequestMapping(value = { "release" })
 	public String release(Model model) {// 通知发布
 
+		return "modules/received/pageList";
+	}
+
+	@RequestMapping(value = { "stuManage" })
+	public String stuManage() {
 		return "modules/received/nextstep";
 	}
 
@@ -103,6 +106,25 @@ public class QueueController {
 			List<Map<String, Object>> sourceList = ImportExcelUtils.readExcel(fileName, inputStream);
 			// redisCache.putListCache("stuImport", sourceList);
 			ybUserService.impStuData(sourceList);
+
+			System.out.println("sourceList" + sourceList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "modules/received/import";
+	}
+
+	@RequestMapping(value = { "teacherImport" })
+	public String teacherImport(@RequestParam(value = "file", required = true) MultipartFile file,
+			HttpServletRequest request) {// 教师数据导入
+		System.out.println("文件名为:" + file.getOriginalFilename());
+		try {
+			String fileName = file.getOriginalFilename();
+			InputStream inputStream = file.getInputStream();
+			List<Map<String, Object>> sourceList = ImportExcelUtils.readExcel(fileName, inputStream);
+			// redisCache.putListCache("stuImport", sourceList);
+			ybUserService.impTeaData(sourceList);
 
 			System.out.println("sourceList" + sourceList);
 		} catch (Exception e) {
@@ -176,7 +198,7 @@ public class QueueController {
 	}
 
 	@RequestMapping(value = { "sendMessage" })
-	public String sendMessage(Imessage imessage, String indexStr) throws JSONException, IOException {// 发送消息
+	public String sendMessage(Imessage imessage, String indexStr) throws IOException {// 发送消息
 		Map<String, Object> map = new HashMap<String, Object>();
 		String producerKey = "31253280";// 消息生产者;
 		String rever = QueueUtils.getReverStr(indexStr);
@@ -229,5 +251,47 @@ public class QueueController {
 		}
 		return "modules/received/consumerDetails";
 
+	}
+
+	@RequestMapping(value = { "searchYbUser" })
+	public String searchYbUser(String yb_userid, String yb_realname, Model model) {// 搜索指定人员
+		List<YbUser> list = null;
+		if (StringUtils.isNotBlank(yb_userid) && StringUtils.isBlank(yb_realname)) {
+			list = ybUserService.findStuList(yb_userid);
+		} else if (StringUtils.isBlank(yb_userid) && StringUtils.isNotBlank(yb_realname)) {
+			list = ybUserService.searchpByName(yb_realname);
+		} else if (StringUtils.isNotBlank(yb_userid) && StringUtils.isNotBlank(yb_realname)) {
+			list = ybUserService.searchpByIdAndName(yb_userid, yb_realname);
+		}
+		model.addAttribute("list", list);
+		return null;
+	}
+
+	@RequestMapping(value = { "deleteImessage" })
+	@ResponseBody
+	public String deleteImessage(String id) {// 删除指定消息
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (StringUtils.isNotBlank(id)) {
+			try {
+				imessageService.deleteImessage(id);
+			} catch (Exception e) {
+				map.put("status", "100");
+			}
+			map.put("status", "200");
+		}
+		return JSON.toJSONString(map);
+
+	}
+
+	@RequestMapping(value = { "recallImessage" })
+	public String recallImessage(String id) {// 撤回操作
+		if (StringUtils.isNotBlank(id)) {
+			try {
+				imessageService.recallImessage(id);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 }

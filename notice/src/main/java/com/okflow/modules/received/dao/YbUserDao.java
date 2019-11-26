@@ -21,4 +21,12 @@ public class YbUserDao extends BaseDao<YbUser> {
 		return find("from YbUser where yb_userid=:p1", new Parameter(yb_userid));
 	}
 
+	public List<YbUser> searchpByName(String yb_realname) {
+		return find("from YbUser where yb_realname=:p1", new Parameter(yb_realname));
+	}
+
+	public List<YbUser> searchpByIdAndName(String yb_userid, String yb_realname) {
+		return find("from YbUser where yb_userid=:p1 and yb_realname=:p2", new Parameter(yb_userid, yb_realname));
+	}
+
 }

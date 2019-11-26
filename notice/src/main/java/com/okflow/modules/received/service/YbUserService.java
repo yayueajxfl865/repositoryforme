@@ -33,7 +33,7 @@ public class YbUserService {
 	private ClabanDao clabanDao;
 
 	@Transactional(readOnly = false, timeout = 240)
-	public void impStuData(List<Map<String, Object>> sourceList) {
+	public void impStuData(List<Map<String, Object>> sourceList) {// 导入学生数据处理
 		for (Map<String, Object> map : sourceList) {// 遍历List
 			String ybID = map.get("ybID").toString();// 易班ID
 			String yb_realname = map.get("name").toString();// 姓名
@@ -71,11 +71,38 @@ public class YbUserService {
 	}
 
 	@Transactional(readOnly = false, timeout = 240)
+	public void impTeaData(List<Map<String, Object>> sourceList) {// 导入教师数据处理
+		for (Map<String, Object> map : sourceList) {// 遍历List
+			String ybID = map.get("ybID").toString();// 易班ID
+			String yb_realname = map.get("name").toString();// 姓名
+			String role = "teacher";// 角色为教师
+			YbUser ybUser = new YbUser();
+			ybUser.setYb_userid(ybID);
+			ybUser.setYb_realname(yb_realname);
+			ybUser.setRole(role);
+			ybUserDao.save(ybUser);
+		}
+	}
+
+	@Transactional(readOnly = false, timeout = 240)
+	public void impClubData() {// 导入社团数据处理
+
+	}
+
+	@Transactional(readOnly = false, timeout = 240)
 	public int delete(String id) {
 		return ybUserDao.deleteById(id);
 	}
 
 	public List<YbUser> findStuList(String yb_userid) {
 		return ybUserDao.findStuList(yb_userid);
+	}
+
+	public List<YbUser> searchpByName(String yb_realname) {
+		return ybUserDao.searchpByName(yb_realname);
+	}
+
+	public List<YbUser> searchpByIdAndName(String yb_userid, String yb_realname) {
+		return ybUserDao.searchpByIdAndName(yb_userid, yb_realname);
 	}
 }

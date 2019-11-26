@@ -1,6 +1,7 @@
 package com.okflow.modules.received.service;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,5 +70,24 @@ public class ImessageService {
 			}
 			consumerDao.save(consumer);
 		}
+	}
+
+	@Transactional(readOnly = false, timeout = 240)
+	public void deleteImessage(String id) {// 删除指定消息
+		Imessage imessage = imessageDao.get(id);
+		imessageDao.delete(imessage);// 级联删除
+	}
+
+	@Transactional(readOnly = false, timeout = 240)
+	public void recallImessage(String id) {// 撤回操作
+		Imessage imessage = imessageDao.get(id);
+		List<Consumer> list = imessage.getConList();
+		List<String> strList = new LinkedList<String>();
+		for (Consumer consumer : list) {
+			strList.add(consumer.getId());
+		}
+		consumerDao.deleteByIds(strList);
+		Producer producer = imessage.getProducer();
+		producerDao.deleteById(producer.getId());
 	}
 }
