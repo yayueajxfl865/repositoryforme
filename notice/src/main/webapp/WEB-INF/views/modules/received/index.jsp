@@ -36,7 +36,7 @@
 		<ul style="display: block">
 			<li><a href="info.html" target="right"><span
 					class="icon-caret-right"></span>我的权限</a></li>
-			<li><a href="info.html" target="right"><span
+			<li><a href="${ctx }/queue/queue/authority" target="right"><span
 					class="icon-caret-right"></span>权限分配</a></li>
 			<li><a href="${ctx }/queue/queue/pass" target="right"><span
 					class="icon-caret-right"></span>密码管理</a></li>
