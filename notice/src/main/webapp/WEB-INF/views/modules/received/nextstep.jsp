@@ -11,55 +11,47 @@
 <link rel="stylesheet" href="${ctxStatic }/lanseUI/css/admin.css">
 </head>
 <body>
-		<div class="panel admin-panel">
-			<div class="panel-head">
-				<strong class="icon-reorder">发送通知</strong>
-			</div>
+	<div class="panel admin-panel">
+		<div class="panel-head">
+			<strong class="icon-reorder">发送通知</strong>
+		</div>
+		<div class="padding border-bottom">
+			<ul class="search" style="padding-left: 10px;">
+				<li><select name="cid" class="input"
+					style="width: 200px; line-height: 17px;" id="tieId">
+						<option value="">请选择分类</option>
+						<c:forEach items="${fns:getTieList()}" var="t" varStatus="status">
+							<option value="${t.id }">${t.name }</option>
+						</c:forEach>
+				</select></li>
+				<li>
+					<%--
+          <input type="text" placeholder="请输入搜索关键字" name="keywords" class="input" style="width:250px; line-height:17px;display:inline-block" />
+           --%> <a href="javascript:void(0)"
+					class="button border-main icon-search" onclick="query()"> 搜索</a> <a
+					href="javascript:history.go(-1)" class="button bg-main icon-backward"
+					type="button">返回</a>
+				</li>
+			</ul>
+		</div>
 		<div class="padding border-bottom" style="height: 90%;">
 			<div>
-				<table class="layui-table">
-					<colgroup>
-						<col width="150">
-						<col width="200">
-					</colgroup>
+				<table class="layui-table" style="text-align: center;">
 					<tbody>
-						<tr style="height: 30px;">
-							<td>
-								<form class="layui-form" action="">
-									<div class="layui-form-item">
-										<div class="layui-input-inline">
-											<select name="tieName" lay-verify="required" id="tieId">
-												<c:forEach items="${fns:getTieList()}" var="t"
-													varStatus="status">
-													<option value="${t.id }">${t.name }</option>
-												</c:forEach>
-											</select>
-										</div>
-									</div>
-								</form>
+						<c:forEach items="${claList}" var="obj" varStatus="status">
+							<c:if test="${status.count eq 1 || (status.count-1) % 5 eq 0}">
+								<tr>
+							</c:if>
+							<td><span style="cursor: pointer;"
+									onclick="queryStu('${obj.id}')">${obj.name }</span>
 							</td>
-
-							<td><button type="button" class="layui-btn layui-btn-normal"
-									onclick="query()">查询</button></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div>
-				<table class="layui-table">
-					<tbody>
-						<c:if test="${claList ne null||claList ne '' }"></c:if>
-						<c:forEach items="${claList }" var="c" varStatus="status">
-							<tr>
-								<td><span onclick="queryStu('${c.id}')">${c.name }</span></td>
-							</tr>
+							<c:if test="${status.count % 5 eq 0 || status.count eq 5}">
+								</tr>
+							</c:if>
 						</c:forEach>
 					</tbody>
 				</table>
-
 			</div>
-
-
 		</div>
 	</div>
 	<script type="text/javascript">
@@ -70,13 +62,25 @@
 			var form = layui.form;
 		});
 		function query() {//查询
-			layer.msg('正在在载...', { icon: 16 ,shade: 0.01});
-			var tieId=$("#tieId").val();
-			window.location.href="${ctx }/queue/queue/loadClaban?tieId="+tieId;
+			var tieId = $("#tieId").val();
+			if (tieId == null || tieId == "") {
+				return false;
+			} else {
+				layer.msg('正在在载...', {
+					icon : 16,
+					shade : 0.01
+				});
+				window.location.href = "${ctx }/queue/queue/loadClaban?tieId="
+						+ tieId;
+			}
 		}
-		function queryStu(claId){//点击系别查询学生
-			layer.msg('正在加载...', { icon: 16 ,shade: 0.01});
-			window.location.href="${ctx }/queue/queue/loadStudent?claId="+claId;
+		function queryStu(claId) {//点击系别查询学生
+			layer.msg('正在加载...', {
+				icon : 16,
+				shade : 0.01
+			});
+			window.location.href = "${ctx }/queue/queue/loadStudent?claId="
+					+ claId;
 		}
 	</script>
 </body>

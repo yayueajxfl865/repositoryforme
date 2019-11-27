@@ -87,6 +87,9 @@ input[type=checkbox]:after  {
 		});
 		
 	}
+	function back(){//返回上一层
+		window.history.back(-1); 
+	}
 </script>
 <body>
     <input type="hidden" id="layerindex" />
@@ -102,9 +105,9 @@ input[type=checkbox]:after  {
 							onclick="checkall()">
 							<span class="icon-check"></span> 全选
 						</button>
-
 						<button class="button bg-main icon-check-square-o" type="button"
 							onclick="nextTep()">下一步</button>
+						<button class="button bg-main icon-backward" type="button" onclick="back()">返回</button>
 
 					</li>
 				</ul>

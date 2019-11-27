@@ -67,6 +67,9 @@
 		<button type="button" class="layui-btn" id="clubs">
 			<i class="layui-icon">&#xe67c;</i>社团导入
 		</button>
+		<button type="button" class="layui-btn" id="clubs">
+			<i class="layui-icon">&#xe601;</i>模版下载
+		</button>
 	</div>
 </body>
 </html>
