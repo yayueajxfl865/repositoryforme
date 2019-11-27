@@ -85,8 +85,41 @@ public class YbUserService {
 	}
 
 	@Transactional(readOnly = false, timeout = 240)
-	public void impClubData() {// 导入社团数据处理
-
+	public void impClubData(List<Map<String, Object>> sourceList) {// 导入社团数据处理
+		for (Map<String, Object> map : sourceList) {// 遍历List
+			String ybID = map.get("ybID").toString();// 易班ID
+			String yb_realname = map.get("name").toString();// 姓名
+			String tieName = map.get("tie").toString();// 系别
+			String clabanName = map.get("claban").toString();// 班别
+			Tie tie = null;
+			Claban claban = null;
+			if (tieDao.getIdList(tieName).size() > 0) {// 包含
+				List<Tie> tieList = tieDao.getTieListByName(tieName);
+				if (tieList.size() > 0) {
+					tie = tieList.get(0);
+				}
+			} else {
+				tie = new Tie();// 创建一个系别
+				tie.setName(tieName);
+				tieDao.save(tie);// 保存系别
+			}
+			if (clabanDao.getIdList(clabanName).size() > 0) {// 包含
+				List<Claban> clabanList = clabanDao.getClabanListByName(clabanName);
+				if (clabanList.size() > 0) {
+					claban = clabanList.get(0);
+				}
+			} else {
+				claban = new Claban();// 创建一个班别
+				claban.setName(clabanName);
+				claban.setTie(tie);
+				clabanDao.save(claban);// 保存班别
+			}
+			YbUser ybUser = new YbUser();
+			ybUser.setYb_userid(ybID);
+			ybUser.setYb_realname(yb_realname);
+			ybUser.setClaban(claban);
+			ybUserDao.save(ybUser);// 保存人员
+		}
 	}
 
 	@Transactional(readOnly = false, timeout = 240)

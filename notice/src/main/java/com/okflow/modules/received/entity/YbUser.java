@@ -12,6 +12,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.okflow.common.persistence.IdEntity;
@@ -28,6 +29,7 @@ public class YbUser extends IdEntity<YbUser> {
 	private String yb_identity;// 用户身份
 	private Claban claban;// 所属班级
 	private String role;// 所属角色
+	private Clubs clubs;// 所属社团
 
 	public YbUser() {
 		super();
@@ -41,6 +43,19 @@ public class YbUser extends IdEntity<YbUser> {
 		this.claban = claban;
 	}
 
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "clubs_id")
+	@NotFound(action = NotFoundAction.IGNORE)
+	@JsonIgnore
+	public Clubs getClubs() {
+		return clubs;
+	}
+
+	public void setClubs(Clubs clubs) {
+		this.clubs = clubs;
+	}
+
+	@Length(min = 0, max = 64)
 	public String getRole() {
 		return role;
 	}
@@ -49,6 +64,7 @@ public class YbUser extends IdEntity<YbUser> {
 		this.role = role;
 	}
 
+	@Length(min = 0, max = 128)
 	public String getYb_userid() {
 		return yb_userid;
 	}
@@ -57,6 +73,7 @@ public class YbUser extends IdEntity<YbUser> {
 		this.yb_userid = yb_userid;
 	}
 
+	@Length(min = 0, max = 20)
 	public String getYb_realname() {
 		return yb_realname;
 	}
@@ -65,6 +82,7 @@ public class YbUser extends IdEntity<YbUser> {
 		this.yb_realname = yb_realname;
 	}
 
+	@Length(min = 0, max = 64)
 	public String getYb_identity() {
 		return yb_identity;
 	}

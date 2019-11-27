@@ -118,7 +118,6 @@ public class QueueController {
 	@RequestMapping(value = { "teacherImport" })
 	public String teacherImport(@RequestParam(value = "file", required = true) MultipartFile file,
 			HttpServletRequest request) {// 教师数据导入
-		System.out.println("文件名为:" + file.getOriginalFilename());
 		try {
 			String fileName = file.getOriginalFilename();
 			InputStream inputStream = file.getInputStream();
@@ -130,7 +129,23 @@ public class QueueController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return "modules/received/import";
+	}
 
+	@RequestMapping(value = { "clubsImport" })
+	public String clubsImport(@RequestParam(value = "file", required = true) MultipartFile file,
+			HttpServletRequest request) {// 社团数据导入
+		try {
+			String fileName = file.getOriginalFilename();
+			InputStream inputStream = file.getInputStream();
+			List<Map<String, Object>> sourceList = ImportExcelUtils.readExcel(fileName, inputStream);
+			// redisCache.putListCache("stuImport", sourceList);
+			ybUserService.impClubData(sourceList);
+
+			System.out.println("sourceList" + sourceList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return "modules/received/import";
 	}
 
@@ -293,5 +308,11 @@ public class QueueController {
 			}
 		}
 		return null;
+	}
+
+	public String authority() {// 权限分配
+
+		return null;
+
 	}
 }
