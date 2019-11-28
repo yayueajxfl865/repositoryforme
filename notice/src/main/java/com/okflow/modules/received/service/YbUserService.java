@@ -2,16 +2,19 @@ package com.okflow.modules.received.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.okflow.modules.received.dao.ClabanDao;
+import com.okflow.modules.received.dao.ClubsDao;
+import com.okflow.modules.received.dao.GradeDao;
 import com.okflow.modules.received.dao.TieDao;
 import com.okflow.modules.received.dao.YbUserDao;
 import com.okflow.modules.received.entity.Claban;
+import com.okflow.modules.received.entity.Clubs;
+import com.okflow.modules.received.entity.Grade;
 import com.okflow.modules.received.entity.Tie;
 import com.okflow.modules.received.entity.YbUser;
 
@@ -31,6 +34,10 @@ public class YbUserService {
 	private TieDao tieDao;
 	@Autowired
 	private ClabanDao clabanDao;
+	@Autowired
+	private ClubsDao clubsDao;
+	@Autowired
+	private GradeDao gradeDao;
 
 	@Transactional(readOnly = false, timeout = 240)
 	public void impStuData(List<Map<String, Object>> sourceList) {// 导入学生数据处理
@@ -80,7 +87,12 @@ public class YbUserService {
 			ybUser.setYb_userid(ybID);
 			ybUser.setYb_realname(yb_realname);
 			ybUser.setRole(role);
-			ybUserDao.save(ybUser);
+			ybUserDao.save(ybUser);// 保存教师信息
+
+			Grade grade = new Grade();
+			grade.setYb_userid(ybID);
+			grade.setRole(role);
+			gradeDao.save(grade);// 保存到角色表
 		}
 	}
 
@@ -91,8 +103,10 @@ public class YbUserService {
 			String yb_realname = map.get("name").toString();// 姓名
 			String tieName = map.get("tie").toString();// 系别
 			String clabanName = map.get("claban").toString();// 班别
+			String clubsName = map.get("clubsName").toString();// 社团名称
 			Tie tie = null;
 			Claban claban = null;
+			Clubs clubs = null;
 			if (tieDao.getIdList(tieName).size() > 0) {// 包含
 				List<Tie> tieList = tieDao.getTieListByName(tieName);
 				if (tieList.size() > 0) {
@@ -114,10 +128,21 @@ public class YbUserService {
 				claban.setTie(tie);
 				clabanDao.save(claban);// 保存班别
 			}
+			if (clubsDao.getClubsList(clubsName).size() > 0) {// 当前社团已存在
+				List<Clubs> clubsList = clubsDao.getClubsList(clubsName);
+				if (clubsList.size() > 0) {
+					clubs = clubsList.get(0);
+				}
+			} else {
+				clubs = new Clubs();// 创建一个新的社团
+				clubs.setClubsName(clubsName);
+				clubsDao.save(clubs);
+			}
 			YbUser ybUser = new YbUser();
 			ybUser.setYb_userid(ybID);
 			ybUser.setYb_realname(yb_realname);
 			ybUser.setClaban(claban);
+			ybUser.setClubs(clubs);
 			ybUserDao.save(ybUser);// 保存人员
 		}
 	}

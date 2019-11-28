@@ -44,6 +44,10 @@ public class ImessageService {
 		return imessageDao.get(id);
 	}
 
+	public List<Imessage> getMePageList(Integer pageNo) {
+		return imessageDao.getMePageList(pageNo);
+	}
+
 	@Transactional(readOnly = false, timeout = 240)
 	public void saveImessage(String producerKey, String theme, String content, String rever, String consumerKey) {// 保存消息
 		Producer producer = new Producer();

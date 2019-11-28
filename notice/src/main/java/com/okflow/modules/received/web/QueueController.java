@@ -253,8 +253,19 @@ public class QueueController {
 	}
 
 	@RequestMapping(value = { "userMessage" })
-	public String userMessage() {// 用户列表
+	public String userMessage() {// 用户消息列表
 		return "modules/received/userMessage";
+	}
+
+	@RequestMapping(value = { "historyMessage" })
+	public String historyMessage(HttpServletRequest request, Model model) {// 根据当前登录角色获取历史消息
+		request.getSession().getAttribute("");// 当前登录用户
+		String role = "admin";// 暂时初始化为管理员，可管理所有消息
+		Integer pageNo = 1;
+		List<Imessage> messageList = imessageService.getMePageList(pageNo);
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("messageList", messageList);
+		return "modules/received/historyMessage";
 	}
 
 	@RequestMapping(value = { "csmDetails" })
@@ -278,7 +289,7 @@ public class QueueController {
 		} else if (StringUtils.isNotBlank(yb_userid) && StringUtils.isNotBlank(yb_realname)) {
 			list = ybUserService.searchpByIdAndName(yb_userid, yb_realname);
 		}
-		model.addAttribute("list", list);
+		model.addAttribute("userList", list);
 		return null;
 	}
 
@@ -310,9 +321,42 @@ public class QueueController {
 		return null;
 	}
 
+	@RequestMapping(value = { "authority" })
 	public String authority() {// 权限分配
+		return "modules/received/authorityPageList";
+	}
 
-		return null;
+	@RequestMapping(value = { "authorityNext" })
+	public String authorityNext() {
+		return "modules/received/authorityNext";
+	}
 
+	@RequestMapping(value = { "authorityLoadClaban" })
+	public String authorityLoadClaban(String tieId, Model model) {
+		if (StringUtils.isNotBlank(tieId)) {
+			Tie tie = tieService.get(tieId);
+			if (tie != null) {
+				List<Claban> claList = tie.getClaList();
+				model.addAttribute("claList", claList);
+			}
+		}
+		return "modules/received/authorityNext";
+	}
+
+	@RequestMapping(value = { "authorityLoadStudent" })
+	public String authorityLoadStudent(String claId, Model model) {// 分配角色，点击班别查询对应的学生
+		if (StringUtils.isNotBlank(claId)) {
+			Claban claban = clabanService.get(claId);
+			if (claban != null) {
+				List<YbUser> userList = claban.getYbList();
+				model.addAttribute("userList", userList);
+			}
+		}
+		return "modules/received/authorityStu";
+	}
+
+	@RequestMapping(value = { "handleForm" })
+	public String handleForm() {// 经办管理
+		return "modules/received/handleForm";
 	}
 }
