@@ -33,35 +33,6 @@ input[type=checkbox]:after  {
 	$(function() {
 		layer.closeAll();
 	})
-	function checkall() {//全选或者反全选
-		$("input[name='chek[]']").each(function() {
-			if (this.checked) {
-				this.checked = false;
-			} else {
-				this.checked = true;
-			}
-		});
-	}
-	function nextTep() {//下一步
-		var indexs = new Array(); // 存放选中的人员信息记录的下标
-		var flag = false;
-		$("input[name='chek[]']").each(function() {
-			if (this.checked) {
-				var index = $(this).val();
-				indexs.push(index);
-				flag = true;
-			}
-		});
-		if (flag) {
-			i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
-			window.location.href="${ctx }/queue/queue/arrComit?indexs="+indexs;
-		}
-		else{
-			layer.msg('请选择人员!', {icon: 0}); 
-			return false;
-		}
-		
-	}
 	function deleteStu(id){//删除学生
 		layer.confirm('该操作可能会导致系统队列异常,是否确定删除该人员?', {icon: 0, title:'系统提示',shade: [0.1, '#117FBA']}, function(index){
 			i = layer.msg("正在执行删除...", {icon: 16,rate: 'top',time: 0});
@@ -101,20 +72,12 @@ input[type=checkbox]:after  {
 			<div class="padding border-bottom">
 				<ul class="search">
 					<li>
-						<button type="button" class="button border-green"
-							onclick="checkall()">
-							<span class="icon-check"></span> 全选
-						</button>
-						<button class="button bg-main icon-check-square-o" type="button"
-							onclick="nextTep()">下一步</button>
 						<button class="button bg-main icon-backward" type="button" onclick="back()">返回</button>
-
 					</li>
 				</ul>
 			</div>
 			<table class="table table-hover text-center">
 				<tr>
-					<th width="50"></th>
 					<th>姓名</th>
 					<th>班别</th>
 					<th>系别</th>
@@ -122,15 +85,13 @@ input[type=checkbox]:after  {
 				</tr>
 				<c:forEach items="${userList }" var="u" varStatus="status">
 					<tr id="tr_${u.id }">
-						<td><input type="checkbox" name="chek[]"
-							value="${u.yb_userid }" /></td>
 						<td>${u.yb_realname }</td>
 						<td>${u.claban.name }</td>
 						<td>${u.claban.tie.name }</td>
 						<td><div class="button-group">
 								<a class="button border-red" href="javascript:void(0)"
 									onclick="deleteStu('${u.id}')"><span class="icon-trash-o"></span>
-									删除</a>
+									授权</a>
 							</div></td>
 					</tr>
 				</c:forEach>

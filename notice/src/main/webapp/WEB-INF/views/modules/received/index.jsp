@@ -37,7 +37,7 @@
 			<li><a href="info.html" target="right"><span
 					class="icon-caret-right"></span>我的权限</a></li>
 			<li><a href="${ctx }/queue/queue/authority" target="right"><span
-					class="icon-caret-right"></span>权限分配</a></li>
+					class="icon-caret-right"></span>角色分配</a></li>
 			<li><a href="${ctx }/queue/queue/pass" target="right"><span
 					class="icon-caret-right"></span>密码管理</a></li>
 		</ul>
@@ -47,8 +47,8 @@
 		<ul>
 			<li><a href="${ctx }/queue/queue/release" target="right"><span
 					class="icon-caret-right"></span>发布通知</a></li>
-			<li><a href="${ctx }/queue/queue/userMessage" target="right"><span
-					class="icon-caret-right"></span>发布管理</a></li>
+			<li><a href="${ctx }/queue/queue/historyMessage" target="right"><span
+					class="icon-caret-right"></span>历史通知</a></li>
 			<li><a href="${ctx }/queue/queue/excelTepImport" target="right"><span
 					class="icon-caret-right"></span>基础数据</a></li>
 		</ul>

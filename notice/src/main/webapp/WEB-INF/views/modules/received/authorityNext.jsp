@@ -70,16 +70,16 @@
 					icon : 16,
 					shade : 0.01
 				});
-				window.location.href = "${ctx }/queue/queue/loadClaban?tieId="
+				window.location.href = "${ctx }/queue/queue/authorityLoadClaban?tieId="
 						+ tieId;
 			}
 		}
-		function queryStu(claId) {//点击系别查询学生
+		function queryStu(claId) {//点击班别查询学生
 			layer.msg('正在加载...', {
 				icon : 16,
 				shade : 0.01
 			});
-			window.location.href = "${ctx }/queue/queue/loadStudent?claId="
+			window.location.href = "${ctx }/queue/queue/authorityLoadStudent?claId="
 					+ claId;
 		}
 	</script>
