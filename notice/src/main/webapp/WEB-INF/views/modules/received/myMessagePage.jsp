@@ -91,44 +91,30 @@
 				</tr>
 				<c:if test="${messageList!=null }">
 					<c:forEach items="${messageList }" var="m" varStatus="status">
-    <tr id="tr_${m.id }">
-      <td>${status.index+1 }</td>
-      <td><span class="box"><a style="color: #0088D5;cursor: pointer;" href="javascript:void(0)">${m.ybUser.yb_realname }</a></span></td>
-      <td>${m.theme }</td>
-      <td>
-      <c:choose>
-        <c:when test="${m.fszt eq '1'}">
-        <span style="color: #0088D5;cursor: pointer;">无</span>
-        </c:when>
-        <c:otherwise>
-            <span class="box"><a style="color: #0088D5;cursor: pointer;" href="javascript:void(0)" onclick="csmDetails('${m.id}')">${m.rever }</a></span>
-        </c:otherwise>
-     </c:choose>
-      </td>
-      <th><span style="color: #333333;font-family: cursive;"><fmt:formatDate value="${m.createDate }" pattern="yyyy-MM-dd HH:mm:ss"/></span></th>
-      <td>用户消息</td>
-      <td>
-     <c:choose>
-        <c:when test="${m.fszt eq '1'}">
-        <span style="color: #EE3333;cursor: pointer;">撤回</span>
-        </c:when>
-        <c:otherwise>
-        <span>发送成功</span>
-        </c:otherwise>
-     </c:choose>
-      </td>
-      <td><div class="button-group"> 
-      <a class="button border-main" href="javascript:void(0)" onclick="query('${m.id}')"><span class="icon-send-o"></span>查看</a>
-      <c:choose>
-        <c:when test="${m.fszt eq '1'}">
-        </c:when>
-        <c:otherwise>
-       <a class="button border-green" href="javascript:void(0)" onclick="withdraw('${m.id}')"><span class="icon-share"></span>撤回</a>
-        </c:otherwise>
-     </c:choose>
-      <a class="button border-red" href="javascript:void(0)" onclick="deleteMessage('${m.id}')"><span class="icon-trash-o"></span> 删除</a> </div></td>
-    </tr>
-    </c:forEach>
+						<tr>
+							<td>${status.index+1 }</td>
+							<td><span class="box"><a
+									style="color: #0088D5; cursor: pointer;"
+									href="javascript:void(0)">${m.producer.ybUser.yb_realname }</a></span></td>
+							<td>${m.theme }</td>
+							<td><span class="box"><a
+									style="color: #0088D5; cursor: pointer;"
+									href="javascript:void(0)" onclick="csmDetails('${m.id}')">${m.rever }</a></span></td>
+							<th><span style="color: #333333; font-family: cursive;"><fmt:formatDate
+										value="${m.createDate }" pattern="yyyy-MM-dd HH:mm:ss" /></span></th>
+							<td>用户消息</td>
+							<td>发送成功</td>
+							<td><div class="button-group">
+									<a class="button border-main" href="javascript:void(0)"
+										onclick="query('${m.id}')"><span class="icon-send-o"></span>查看</a>
+									<a class="button border-green" href="javascript:void(0)"
+										onclick="withdraw()"><span class="icon-share"></span>撤回</a> <a
+										class="button border-red" href="javascript:void(0)"
+										onclick="return del(1,2)"><span class="icon-trash-o"></span>
+										删除</a>
+								</div></td>
+						</tr>
+					</c:forEach>
 				</c:if>
 				<c:if test="${messageList==null }">
 					<span>暂无任何数据...</span>

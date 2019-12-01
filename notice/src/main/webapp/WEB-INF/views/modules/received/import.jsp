@@ -21,7 +21,14 @@
 				$("#layerindex").val(i);
 			},
 			done : function(res) {
-				layer.close($("#layerindex").val());
+				var status=res.status;
+				var message=res.message;
+				if(status=='200'){
+					layer.msg("导入成功,共导入"+message+"条记录", {icon: 1}); 
+				}
+				else{
+					layer.msg('导入失败', {icon: 2}); 
+				}
 			}
 		});
 		upload.render({//教师导入
@@ -35,7 +42,14 @@
 				$("#layerindex").val(i);
 			},
 			done : function(res) {
-				layer.close($("#layerindex").val());
+				var status=res.status;
+				var message=res.message;
+				if(status=='200'){
+					layer.msg("导入成功,共导入"+message+"条记录", {icon: 1}); 
+				}
+				else{
+					layer.msg('导入失败', {icon: 2}); 
+				}
 			}
 		});
 		upload.render({//教师导入
@@ -49,7 +63,14 @@
 				$("#layerindex").val(i);
 			},
 			done : function(res) {
-				layer.close($("#layerindex").val());
+				var status=res.status;
+				var message=res.message;
+				if(status=='200'){
+					layer.msg("导入成功,共导入"+message+"条记录", {icon: 1}); 
+				}
+				else{
+					layer.msg('导入失败', {icon: 2}); 
+				}
 			}
 		});
 	});
@@ -71,5 +92,31 @@
 			<i class="layui-icon">&#xe601;</i>模版下载
 		</button>
 	</div>
+	<%-- 
+	<div>
+		<table class="layui-table" style="text-align: center;">
+			<thead style="text-align: center;">
+				<tr style="text-align: center;">
+					<th style="text-align: center;">昵称</th>
+					<th style="text-align: center;">加入时间</th>
+					<th style="text-align: center;">签名</th>
+					<th style="text-align: center;">签名</th>
+					<th style="text-align: center;">签名</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach begin="0" end="50">
+					<tr>
+						<td>哈哈</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
+	 --%>
 </body>
 </html>

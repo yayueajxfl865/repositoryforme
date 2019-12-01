@@ -61,6 +61,31 @@ input[type=checkbox]:after  {
 	function back(){//返回上一层
 		window.history.back(-1); 
 	}
+	
+	function authorize(id){//授权
+		layer.confirm('确定授权该人员?', {icon: 0, title:'系统提示',shade: [0.1, '#117FBA']}, function(index){
+			i = layer.msg("正在授权...", {icon: 16,rate: 'top',time: 0});
+			$("#layerindex").val(i);
+			$.ajax({
+				url:"${ctx}/queue/queue/authorize/?id="+id,
+				type:"post",
+				async:false,
+				success:function(result){
+					var code = $.parseJSON(result);
+					if(code.status=="100"){
+						layer.msg('该人员正处于系统队列中,无法删除!', {icon: 2}); 
+					}
+					else if(code.status=="200"){
+						layer.msg('删除成功!', {icon: 1}); //删除成功
+			    		$("#tr_"+id).remove();
+					}
+				},
+				error:function(e){
+					layer.msg('删除失败!', {icon: 2}); 
+				}
+			});
+		});
+	}
 </script>
 <body>
     <input type="hidden" id="layerindex" />
@@ -89,8 +114,8 @@ input[type=checkbox]:after  {
 						<td>${u.claban.name }</td>
 						<td>${u.claban.tie.name }</td>
 						<td><div class="button-group">
-								<a class="button border-red" href="javascript:void(0)"
-									onclick="deleteStu('${u.id}')"><span class="icon-trash-o"></span>
+								<a class="button border-main" href="javascript:void(0)"
+									onclick="authorize('${u.id}')"><span class="icon-refresh"></span>
 									授权</a>
 							</div></td>
 					</tr>

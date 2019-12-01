@@ -31,15 +31,21 @@
 			<strong><span class="icon-list"></span>菜单列表</strong>
 		</div>
 		<h2>
-			<span class="icon-user"></span>权限管理
+			<span class="icon-user"></span>数据管理
 		</h2>
 		<ul style="display: block">
+		  <%-- 
+		    <li><a href="${ctx }/queue/queue/pass" target="right"><span
+					class="icon-caret-right"></span>基础数据</a></li> --%>
+		    <li><a href="${ctx }/queue/queue/authority" target="right"><span
+					class="icon-caret-right"></span>角色分配</a></li>
+		    <li><a href="${ctx }/queue/queue/excelTepImport" target="right"><span
+					class="icon-caret-right"></span>数据导入</a></li>
+		
+		<%-- 
 			<li><a href="info.html" target="right"><span
 					class="icon-caret-right"></span>我的权限</a></li>
-			<li><a href="${ctx }/queue/queue/authority" target="right"><span
-					class="icon-caret-right"></span>角色分配</a></li>
-			<li><a href="${ctx }/queue/queue/pass" target="right"><span
-					class="icon-caret-right"></span>密码管理</a></li>
+		 --%>
 		</ul>
 		<h2>
 			<span class="icon-pencil-square-o"></span>通知管理
@@ -47,10 +53,11 @@
 		<ul>
 			<li><a href="${ctx }/queue/queue/release" target="right"><span
 					class="icon-caret-right"></span>发布通知</a></li>
+			<li><a href="${ctx }/queue/queue/myMessagePage" target="right"><span
+					class="icon-caret-right"></span>我发布的</a></li>
 			<li><a href="${ctx }/queue/queue/historyMessage" target="right"><span
 					class="icon-caret-right"></span>历史通知</a></li>
-			<li><a href="${ctx }/queue/queue/excelTepImport" target="right"><span
-					class="icon-caret-right"></span>基础数据</a></li>
+			
 		</ul>
 	</div>
 	<input id="layerIndex" type="hidden">

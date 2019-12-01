@@ -10,35 +10,57 @@
 <link rel="stylesheet" href="${ctxStatic }/lanseUI/css/pintuer.css">
 <link rel="stylesheet" href="${ctxStatic }/lanseUI/css/admin.css">
 </head>
+<style>
+input[type=checkbox]:after  {
+        content: "";
+        display:block;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        line-height: 14px;
+        font-size: 16px;
+        color: #fff;
+        border: 2px solid #ddd;
+        background-color: #fff;
+        box-sizing:border-box;
+    }
+    input[type=checkbox]:checked:after  {
+        content: '\2714';
+        background-color: #5774FF;
+    }
+</style>
+<script type="text/javascript">
+	$(function() {
+		layer.closeAll();
+	})
+	function back(){//返回上一层
+		window.history.back(-1); 
+	}
+	function addHandle(){//添加角色
+		i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
+		window.location.href="${ctx }/queue/queue/addHandle";
+	}
+</script>
 <body>
-	<div class="panel admin-panel">
-		<div class="panel-head">
-			<strong class="icon-reorder">发送通知</strong>
-		</div>
-		<form action="" method="post" id="userForm">
-		<div class="padding border-bottom">
-			<ul class="search" style="padding-left: 10px;">
-				<li><input type="text" placeholder="请输入易班ID" name="yb_userid"
-					class="input"
-					style="width: 250px; line-height: 17px; display: inline-block" />
-				</li>
-				<li><input type="text" placeholder="请输入姓名" name="yb_realname"
-					class="input"
-					style="width: 250px; line-height: 17px; display: inline-block" />
-					<a href="javascript:void(0)" class="button border-main icon-search"
-					onclick="query()">搜索</a> <a href="javascript:history.go(-1)"
-					class="button bg-main icon-backward" type="button">返回</a>
-				</li>
-			</ul>
-		</div>
-		</form>
-		<div class="padding border-bottom" style="height: 90%;">
-			<div>
+    <input type="hidden" id="layerindex" />
+	<form method="post" action="">
+		<div class="panel admin-panel">
+			<div class="panel-head">
+				<strong class="icon-reorder">学生管理</strong>
+			</div>
+			<div class="padding border-bottom">
+				<ul class="search">
+					<li>
+						<a class="button border-main icon-plus-square-o" href="javascript:void(0)" onclick="addHandle()">添加角色</a>
+						<button class="button bg-main icon-backward" type="button" onclick="back()">返回</button>
 
-				<c:if test="${userList !=null&&userList!=''}">
+					</li>
+				</ul>
+			</div>
+			<div class="padding border-bottom" style="height: 90%;">
+				<c:if test="${userList!=null&&userList!='' }">
 					<table class="table table-hover text-center">
 						<tr>
-							<th width="50"></th>
 							<th>姓名</th>
 							<th>班别</th>
 							<th>系别</th>
@@ -46,8 +68,6 @@
 						</tr>
 						<c:forEach items="${userList }" var="u" varStatus="status">
 							<tr id="tr_${u.id }">
-								<td><input type="checkbox" name="chek[]"
-									value="${u.yb_userid }" /></td>
 								<td>${u.yb_realname }</td>
 								<td>${u.claban.name }</td>
 								<td>${u.claban.tie.name }</td>
@@ -71,20 +91,6 @@
 				</c:if>
 			</div>
 		</div>
-	</div>
-	<script type="text/javascript">
-		$(function() {
-			layer.closeAll();
-		});
-		function query() {//查询指定User
-			layer.msg('正在搜索...', {
-				icon : 16,
-				shade : 0.01
-			});
-		    var action="${ctx }/queue/queue/searchYbUser";
-		    $("#userForm").attr("action",action).submit();
-		}
-		
-	</script>
+	</form>
 </body>
 </html>

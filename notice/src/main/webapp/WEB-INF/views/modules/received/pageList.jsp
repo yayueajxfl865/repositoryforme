@@ -30,6 +30,14 @@
 		i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
 		window.location.href="${ctx }/queue/queue/stuManage";
 	}
+	function clubsManage(){//社团管理
+		i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
+		window.location.href="${ctx }/queue/queue/clubsManage";
+	}
+	function teacherManage(){//教师管理
+		i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
+		window.location.href="${ctx }/queue/queue/teacherManage";
+	}
 
 </script>
 <body>
@@ -49,12 +57,14 @@
 							</div>
 						</td>
 						<td>
-							<div class="form_title_div" style="float: left;cursor: pointer;">
+							<div class="form_title_div" style="float: left;cursor: pointer;"
+							onclick="teacherManage()">
 								<span>教师管理</span>
 							</div>
 						</td>
 						<td>
-							<div class="form_title_div" style="float: left;cursor: pointer;">
+							<div class="form_title_div" style="float: left;cursor: pointer;"
+							onclick="clubsManage()">
 								<span>社团管理</span>
 							</div>
 						</td>

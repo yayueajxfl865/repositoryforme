@@ -53,14 +53,13 @@ input[type=checkbox]:after  {
 			}
 		});
 		if (flag) {
-			i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
+			i = layer.msg("正在提交，请稍候...", {icon: 16,rate: 'top',time: 0});
 			window.location.href="${ctx }/queue/queue/arrComit?indexs="+indexs;
 		}
 		else{
 			layer.msg('请选择人员!', {icon: 0}); 
 			return false;
 		}
-		
 	}
 	function deleteStu(id){//删除学生
 		layer.confirm('该操作可能会导致系统队列异常,是否确定删除该人员?', {icon: 0, title:'系统提示',shade: [0.1, '#117FBA']}, function(index){
@@ -85,7 +84,6 @@ input[type=checkbox]:after  {
 				}
 			});
 		});
-		
 	}
 	function back(){//返回上一层
 		window.history.back(-1); 

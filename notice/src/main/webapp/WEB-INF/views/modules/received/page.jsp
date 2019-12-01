@@ -21,7 +21,7 @@
 	   layer.closeAll();
    })
    function formComit(){//消息表单提交
-	   i = layer.msg("正在添加至至消息队列，等待系统发送...", {icon: 16,rate: 'top',time: 0});
+	   i = layer.msg("消息队列正在启动，等待系统发送...", {icon: 16,rate: 'top',time: 0});
 	   var action="${ctx}/queue/queue/sendMessage";
 	   $("#pro_form").attr("action",action).submit();
    }

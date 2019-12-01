@@ -58,27 +58,19 @@
 		$(function() {
 			layer.closeAll();
 		});
-		layui.use('form', function() {
-			var form = layui.form;
-		});
+		
 		function query() {//查询
 			var tieId = $("#tieId").val();
 			if (tieId == null || tieId == "") {
 				return false;
 			} else {
-				layer.msg('正在在载...', {
-					icon : 16,
-					shade : 0.01
-				});
+				i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
 				window.location.href = "${ctx }/queue/queue/authorityLoadClaban?tieId="
 						+ tieId;
 			}
 		}
 		function queryStu(claId) {//点击班别查询学生
-			layer.msg('正在加载...', {
-				icon : 16,
-				shade : 0.01
-			});
+			i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
 			window.location.href = "${ctx }/queue/queue/authorityLoadStudent?claId="
 					+ claId;
 		}
