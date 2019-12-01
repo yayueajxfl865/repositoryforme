@@ -1,6 +1,7 @@
 package com.okflow.modules.received.service;
 
 import java.util.Arrays;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,11 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.okflow.modules.received.dao.ConsumerDao;
 import com.okflow.modules.received.dao.ImessageDao;
-import com.okflow.modules.received.dao.ProducerDao;
 import com.okflow.modules.received.dao.YbUserDao;
 import com.okflow.modules.received.entity.Consumer;
 import com.okflow.modules.received.entity.Imessage;
-import com.okflow.modules.received.entity.Producer;
 import com.okflow.modules.received.entity.YbUser;
 
 /**
@@ -27,8 +26,6 @@ import com.okflow.modules.received.entity.YbUser;
 @Transactional(readOnly = true)
 public class ImessageService {
 
-	@Autowired
-	private ProducerDao producerDao;
 	@Autowired
 	private ConsumerDao consumerDao;
 	@Autowired
@@ -48,20 +45,21 @@ public class ImessageService {
 		return imessageDao.getMePageList(pageNo);
 	}
 
+	public List<Imessage> getmyMePageList(String yb_userid, Integer pageNo) {
+		return imessageDao.getmyMePageList(yb_userid, pageNo);
+	}
+
 	@Transactional(readOnly = false, timeout = 240)
 	public void saveImessage(String producerKey, String theme, String content, String rever, String consumerKey) {// 保存消息
-		Producer producer = new Producer();
-		List<YbUser> userList = ybUserDao.findStuList(producerKey);
-		producer.setYb_userid(producerKey);
-		if (userList.size() > 0) {
-			producer.setYbUser(userList.get(0));
-		}
-		producerDao.save(producer);// 保存消息生产者
 		Imessage imessage = new Imessage();
-		imessage.setProducer(producer);
 		imessage.setTheme(theme);
 		imessage.setContent(content);
 		imessage.setRever(rever);
+		imessage.setYbid(producerKey);// 保存生产者ybID
+		List<YbUser> list = ybUserDao.findStuList(producerKey);
+		if (list.size() > 0) {
+			imessage.setYbUser(list.get(0));
+		}
 		imessageDao.save(imessage);// 保存消息
 		List<String> result = Arrays.asList(consumerKey.split(","));// 消费者列表
 		for (String key : result) {
@@ -78,20 +76,13 @@ public class ImessageService {
 
 	@Transactional(readOnly = false, timeout = 240)
 	public void deleteImessage(String id) {// 删除指定消息
-		Imessage imessage = imessageDao.get(id);
-		imessageDao.delete(imessage);// 级联删除
+		consumerDao.deleteByMsId(id);
+		imessageDao.deleteById(id);
 	}
 
 	@Transactional(readOnly = false, timeout = 240)
 	public void recallImessage(String id) {// 撤回操作
-		Imessage imessage = imessageDao.get(id);
-		List<Consumer> list = imessage.getConList();
-		List<String> strList = new LinkedList<String>();
-		for (Consumer consumer : list) {
-			strList.add(consumer.getId());
-		}
-		consumerDao.deleteByIds(strList);
-		Producer producer = imessage.getProducer();
-		producerDao.deleteById(producer.getId());
+		consumerDao.deleteByMsId(id);
+		imessageDao.updatefszt(id);
 	}
 }

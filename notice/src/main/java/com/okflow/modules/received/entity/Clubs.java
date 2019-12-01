@@ -50,7 +50,7 @@ public class Clubs extends IdEntity<Clubs> {
 		this.clubsName = clubsName;
 	}
 
-	@OneToMany(mappedBy = "clubs", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "clubs", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@OrderBy(value = "id")
 	@Fetch(FetchMode.SUBSELECT)
 	@NotFound(action = NotFoundAction.IGNORE)

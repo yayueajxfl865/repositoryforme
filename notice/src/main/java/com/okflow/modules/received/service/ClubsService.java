@@ -19,4 +19,12 @@ public class ClubsService {
 	public List<Clubs> getClubsList(String clubsName) {
 		return clubsDao.getClubsList(clubsName);
 	}
+
+	public List<Clubs> getAllClubsList() {
+		return clubsDao.getAllClubsList();
+	}
+
+	public Clubs get(String id) {
+		return clubsDao.get(id);
+	}
 }

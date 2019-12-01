@@ -27,7 +27,7 @@ public class ImportExcelUtils {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static List<Map<String, Object>> readExcel(String fileName, InputStream inputStream) throws Exception {
+	public static List<Map<String, Object>> readExcelByKey(String fileName, InputStream inputStream) throws Exception {
 
 		boolean ret = isXls(fileName);
 		Workbook workbook = null;
@@ -59,6 +59,38 @@ public class ImportExcelUtils {
 		}
 		workbook.close();
 		return list;
+	}
+	@SuppressWarnings("deprecation")
+	public static List<Map<String, Object>> readExcel(String fileName, InputStream inputStream) throws Exception {
 
+		boolean ret = isXls(fileName);
+		Workbook workbook = null;
+		// 根据后缀创建不同的对象
+		if (ret) {
+			workbook = new HSSFWorkbook(inputStream);
+		} else {
+			workbook = new XSSFWorkbook(inputStream);
+		}
+		Sheet sheet = workbook.getSheetAt(0);
+		// 得到标题行
+		Row titleRow = sheet.getRow(0);
+		int lastRowNum = sheet.getLastRowNum();//获取表格最后一行
+		int lastCellNum = titleRow.getLastCellNum();//获取表格最后一列
+		List<Map<String, Object>> list = new ArrayList<>();
+
+		for (int i = 1; i <= lastRowNum; i++) {//从表格第一行开始遍历
+			Map<String, Object> map = new HashMap<String, Object>();
+			Row row = sheet.getRow(i);//获取行
+			for (int j = 0; j < lastCellNum; j++) {//获取列
+				// 得到列名
+				String key = String.valueOf(j);//用表格列数下标作为map的key
+				Cell cell = row.getCell(j);
+				cell.setCellType(CellType.STRING);
+				map.put(key, cell.getStringCellValue());
+			}
+			list.add(map);
+		}
+		workbook.close();
+		return list;
 	}
 }

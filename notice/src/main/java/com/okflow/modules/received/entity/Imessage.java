@@ -6,8 +6,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -22,7 +22,6 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.validator.constraints.Length;
 
 import com.beust.jcommander.internal.Lists;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.okflow.common.persistence.IdEntity;
 
 /**
@@ -39,7 +38,8 @@ import com.okflow.common.persistence.IdEntity;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Imessage extends IdEntity<Imessage> {
 	private static final long serialVersionUID = 1L;
-	private Producer producer;// 消息生产者
+	private YbUser ybUser;// 消息生产者
+	private String ybid;// 生产者易班id
 	private List<Consumer> conList = Lists.newArrayList();// 一条消息有多个消费者
 	private String theme;// 消息主题
 	private String content;// 消息内容
@@ -47,6 +47,15 @@ public class Imessage extends IdEntity<Imessage> {
 	private String fszt;// 发送状态
 	private String recall;// 撤回操作
 	private String rever;// 接收者简介
+
+	@Length(min = 0, max = 64)
+	public String getYbid() {
+		return ybid;
+	}
+
+	public void setYbid(String ybid) {
+		this.ybid = ybid;
+	}
 
 	@Length(min = 0, max = 100)
 	public String getRever() {
@@ -102,16 +111,14 @@ public class Imessage extends IdEntity<Imessage> {
 		this.content = content;
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "producer_id")
-	@NotFound(action = NotFoundAction.IGNORE)
-	@JsonIgnore
-	public Producer getProducer() {
-		return producer;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "ybuser_id")
+	public YbUser getYbUser() {
+		return ybUser;
 	}
 
-	public void setProducer(Producer producer) {
-		this.producer = producer;
+	public void setYbUser(YbUser ybUser) {
+		this.ybUser = ybUser;
 	}
 
 	@OneToMany(mappedBy = "imessage", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

@@ -29,4 +29,8 @@ public class YbUserDao extends BaseDao<YbUser> {
 		return find("from YbUser where yb_userid=:p1 and yb_realname=:p2", new Parameter(yb_userid, yb_realname));
 	}
 
+	public List<YbUser> findByRole(String role) {
+		return find("from YbUser where role=:p1", new Parameter(role));
+	}
+
 }

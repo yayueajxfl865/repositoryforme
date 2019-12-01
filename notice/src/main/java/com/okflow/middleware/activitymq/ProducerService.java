@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
  * @version 2019-11-05
  * 
  */
+/**
+ 
 @Service
 public class ProducerService {
 
@@ -69,4 +71,4 @@ public class ProducerService {
 			}
 		});
 	}
-}
+}*/

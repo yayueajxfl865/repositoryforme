@@ -50,11 +50,11 @@ public class CallbackFilter implements Filter {
 				JSONObject json = JSONObject.fromObject(authorize.querytoken(code, AppUtil.BACKURL));
 				String access_token = json.getString("access_token");
 				User user = new User(access_token);
-				System.out.println("user"+user.me());
-				request.getSession().setAttribute("currentUser", user);
+				System.out.println("user" + user.me());
+				request.getSession().setAttribute(QueueUtils.currentUser, user);
 				response.sendRedirect(request.getContextPath() + "/a/queue/queue/tokenUrl");
 			} else {
-				response.sendRedirect(request.getContextPath() + "/index.jsp");
+				QueueUtils.authenTication(response);
 			}
 		} else {
 			chain.doFilter(request, response);

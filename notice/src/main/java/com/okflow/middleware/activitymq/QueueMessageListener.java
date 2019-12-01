@@ -15,7 +15,7 @@ import com.okflow.modules.received.service.ImessageService;
  * 
  * @author xiaofanglin
  * @version 2019-11-05
- */
+ 
 public class QueueMessageListener implements MessageListener {
 
 	private static ImessageService imessageService = SpringContextHolder.getBean(ImessageService.class);
@@ -55,4 +55,4 @@ public class QueueMessageListener implements MessageListener {
 
 	}
 
-}
+}*/

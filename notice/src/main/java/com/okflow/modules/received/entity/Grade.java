@@ -1,5 +1,12 @@
 package com.okflow.modules.received.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.Length;
 
 import com.okflow.common.persistence.IdEntity;
@@ -10,6 +17,11 @@ import com.okflow.common.persistence.IdEntity;
  * @author xiaofanglin
  * @version 2019-11-26
  */
+@Entity
+@Table(name = "yb_grade")
+@DynamicInsert
+@DynamicUpdate
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Grade extends IdEntity<Grade> {
 
 	private static final long serialVersionUID = 1L;

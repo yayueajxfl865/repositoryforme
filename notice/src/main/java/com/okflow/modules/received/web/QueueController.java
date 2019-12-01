@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.jms.Destination;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +24,22 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSON;
 import com.okflow.common.config.Global;
 import com.okflow.common.utils.ImportExcelUtils;
-import com.okflow.middleware.activitymq.ProducerService;
 import com.okflow.middleware.redis.RedisCache;
 import com.okflow.modules.received.entity.Claban;
+import com.okflow.modules.received.entity.Clubs;
 import com.okflow.modules.received.entity.Consumer;
 import com.okflow.modules.received.entity.Imessage;
 import com.okflow.modules.received.entity.Tie;
 import com.okflow.modules.received.entity.YbUser;
 import com.okflow.modules.received.service.ClabanService;
+import com.okflow.modules.received.service.ClubsService;
 import com.okflow.modules.received.service.ImessageService;
 import com.okflow.modules.received.service.TieService;
 import com.okflow.modules.received.service.YbUserService;
 import com.okflow.modules.received.utils.QueueUtils;
+
+import cn.yiban.open.common.User;
+import net.sf.json.JSONObject;
 
 /**
  * 消息队列Controller
@@ -46,11 +51,13 @@ import com.okflow.modules.received.utils.QueueUtils;
 @RequestMapping(value = { "${adminPath}/queue/queue" })
 public class QueueController {
 
-	@Autowired
-	private ProducerService producerService;
-	@Autowired
-	@Qualifier("informQueueDestination")
-	private Destination destination;
+	/*
+	 * @Autowired private ProducerService producerService;
+	 * 
+	 * @Autowired
+	 * 
+	 * @Qualifier("informQueueDestination") private Destination destination;
+	 */
 	@Autowired
 	private YbUserService ybUserService;
 	@Autowired
@@ -61,17 +68,25 @@ public class QueueController {
 	private ClabanService clabanService;
 	@Autowired
 	private ImessageService imessageService;
+	@Autowired
+	private ClubsService clubsService;
 
 	@RequestMapping(value = { "tokenUrl" })
-	public String tokenUrl() {
-		return "layouts/login";
+	public String tokenUrl(HttpServletRequest request) {
+		StringBuffer url = request.getRequestURL();
+		String uri = request.getRequestURI();
+		System.out.println("url" + url);
+		System.out.println("uri" + uri);
+
+		System.out.println("回调地址");
+		return "modules/received/index";
 	}
 
 	@RequestMapping(value = { "messagetext" })
 	public String messagetext(HttpServletRequest request) {
 		String userName = request.getParameter("userName");
 		System.out.println("userName" + userName);
-		producerService.sendTextMessage(destination, userName);
+		// producerService.sendTextMessage(destination, userName);
 		return "layouts/login";
 	}
 
@@ -91,62 +106,73 @@ public class QueueController {
 		return "modules/received/nextstep";
 	}
 
+	@RequestMapping(value = { "clubsManage" })
+	public String clubsManage() {
+		return "modules/received/clubsNextstep";
+	}
+
 	@RequestMapping(value = { "excelTepImport" })
 	public String excelTepImport() {
 		return "modules/received/import";
 	}
 
 	@RequestMapping(value = { "studentImport" })
+	@ResponseBody
 	public String studentImport(@RequestParam(value = "file", required = true) MultipartFile file,
 			HttpServletRequest request) {// 学生数据导入
-		System.out.println("文件名为:" + file.getOriginalFilename());
+		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String fileName = file.getOriginalFilename();
 			InputStream inputStream = file.getInputStream();
 			List<Map<String, Object>> sourceList = ImportExcelUtils.readExcel(fileName, inputStream);
 			// redisCache.putListCache("stuImport", sourceList);
 			ybUserService.impStuData(sourceList);
-
-			System.out.println("sourceList" + sourceList);
+			map.put("status", "200");
+			map.put("message", sourceList.size());
 		} catch (Exception e) {
+			map.put("status", "100");
 			e.printStackTrace();
 		}
-
-		return "modules/received/import";
+		return JSON.toJSONString(map);
 	}
 
 	@RequestMapping(value = { "teacherImport" })
+	@ResponseBody
 	public String teacherImport(@RequestParam(value = "file", required = true) MultipartFile file,
 			HttpServletRequest request) {// 教师数据导入
+		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String fileName = file.getOriginalFilename();
 			InputStream inputStream = file.getInputStream();
 			List<Map<String, Object>> sourceList = ImportExcelUtils.readExcel(fileName, inputStream);
-			// redisCache.putListCache("stuImport", sourceList);
 			ybUserService.impTeaData(sourceList);
-
-			System.out.println("sourceList" + sourceList);
+			map.put("status", "200");
+			map.put("message", sourceList.size());
 		} catch (Exception e) {
+			map.put("status", "100");
 			e.printStackTrace();
 		}
-		return "modules/received/import";
+		return JSON.toJSONString(map);
 	}
 
 	@RequestMapping(value = { "clubsImport" })
+	@ResponseBody
 	public String clubsImport(@RequestParam(value = "file", required = true) MultipartFile file,
 			HttpServletRequest request) {// 社团数据导入
+		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String fileName = file.getOriginalFilename();
 			InputStream inputStream = file.getInputStream();
 			List<Map<String, Object>> sourceList = ImportExcelUtils.readExcel(fileName, inputStream);
-			// redisCache.putListCache("stuImport", sourceList);
 			ybUserService.impClubData(sourceList);
+			map.put("status", "200");
+			map.put("message", sourceList.size());
 
-			System.out.println("sourceList" + sourceList);
 		} catch (Exception e) {
+			map.put("status", "100");
 			e.printStackTrace();
 		}
-		return "modules/received/import";
+		return JSON.toJSONString(map);
 	}
 
 	@RequestMapping(value = { "tieTree" })
@@ -192,6 +218,7 @@ public class QueueController {
 	@RequestMapping(value = { "candidate" })
 	public String loginQueue(String[] indexs, Model model) {// 选择人员之后的下一步
 		String indexStr = StringUtils.join(indexs, ",");
+		System.out.println("indexs" + indexs);
 		model.addAttribute("indexStr", indexStr);
 		return "modules/received/page";
 	}
@@ -213,25 +240,25 @@ public class QueueController {
 	}
 
 	@RequestMapping(value = { "sendMessage" })
-	public String sendMessage(Imessage imessage, String indexStr) throws IOException {// 发送消息
-		Map<String, Object> map = new HashMap<String, Object>();
-		String producerKey = "31253280";// 消息生产者;
-		String rever = QueueUtils.getReverStr(indexStr);
+	public String sendMessage(Imessage imessage, String indexStr, HttpServletRequest request,
+			HttpServletResponse response) throws IOException {// 发送消息
 		/**
 		 * 暂不存消息队列 map.put("producerKey", producerKey); map.put("theme",
 		 * imessage.getTheme()); map.put("content", imessage.getContent());
 		 * map.put("rever", rever); map.put("consumerKey", indexStr);
-		 * 
-		 * 
 		 * producerService.sendMapMessage(destination, map);
 		 */
-		imessageService.saveImessage(producerKey, imessage.getTheme(), imessage.getContent(), rever, indexStr);
+		String id="29905380";
+		String rever = QueueUtils.getReverStr(indexStr);
+		//String yb_userid = QueueUtils.getyb_userid(request, response);
+		imessageService.saveImessage(id, imessage.getTheme(), imessage.getContent(), rever, indexStr);
 		return "redirect:" + Global.getAdminPath() + "/queue/queue/indexIcon";
 	}
 
 	@RequestMapping(value = "/arrComit")
 	public String arrComit(String[] indexs, Model model) {
 		String indexStr = StringUtils.join(indexs, ",");
+		System.out.println("indexStr" + indexStr);
 		model.addAttribute("indexStr", indexStr);
 		return "modules/received/page";
 	}
@@ -258,10 +285,13 @@ public class QueueController {
 	}
 
 	@RequestMapping(value = { "historyMessage" })
-	public String historyMessage(HttpServletRequest request, Model model) {// 根据当前登录角色获取历史消息
+	public String historyMessage(HttpServletRequest request,
+			@RequestParam(value = "pageNo", required = false) Integer pageNo, Model model) {// 根据当前登录角色获取历史消息
 		request.getSession().getAttribute("");// 当前登录用户
 		String role = "admin";// 暂时初始化为管理员，可管理所有消息
-		Integer pageNo = 1;
+		if ("".equals(pageNo) || pageNo == null) {
+			pageNo = 1;
+		}
 		List<Imessage> messageList = imessageService.getMePageList(pageNo);
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("messageList", messageList);
@@ -358,5 +388,58 @@ public class QueueController {
 	@RequestMapping(value = { "handleForm" })
 	public String handleForm() {// 经办管理
 		return "modules/received/handleForm";
+	}
+
+	@RequestMapping(value = { "addHandle" })
+	public String addHandle() {// 添加角色
+		return "modules/received/addhandle";
+	}
+
+	@RequestMapping(value = { "loadClubs" })
+	public String loadClubs(@RequestParam(value = "clubsId", required = true) String clubsId, Model model) {
+		Clubs clubs = clubsService.get(clubsId);
+		List<YbUser> userList = clubs.getYbUserList();
+		model.addAttribute("userList", userList);
+		return "modules/received/clubsNextstep";
+	}
+
+	@RequestMapping(value = { "teacherManage" })
+	public String teacherManage(Model modle) {
+		String role = "teacher";
+		List<YbUser> userList = ybUserService.findByRole(role);
+		modle.addAttribute("userList", userList);
+		return "modules/received/teacherNextstep";
+	}
+
+	@RequestMapping(value = { "myMessagePage" })
+	public String myMessagePage(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value = "pageNo", required = false) Integer pageNo, Model model) {// 我发布的
+		if ("".equals(pageNo) || pageNo == null) {
+			pageNo = 1;
+		}
+		String yb_userid = QueueUtils.getyb_userid(request, response);
+		List<Imessage> messageList = imessageService.getmyMePageList(yb_userid, pageNo);
+		model.addAttribute("messageList", messageList);
+		return "modules/received/myMessagePage";
+	}
+
+	@RequestMapping(value = { "deleteMessage" })
+	@ResponseBody
+	public String deleteMessage(@RequestParam(value = "id", required = true) String id) {// 删除通知
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			imessageService.deleteImessage(id);
+			map.put("status", "200");
+		} catch (Exception e) {
+			map.put("status", "100");
+			e.printStackTrace();
+		}
+		return JSON.toJSONString(map);
+	}
+
+	@RequestMapping(value = { "withdraw" })
+	public String withdraw(@RequestParam(value = "id", required = true) String id) {// 撤回通知
+		imessageService.recallImessage(id);
+		return "redirect:" + Global.getAdminPath() + "/queue/queue/indexIcon";
 	}
 }
