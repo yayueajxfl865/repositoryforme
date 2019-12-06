@@ -2,6 +2,7 @@ package com.okflow.modules.received.web;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -248,9 +249,9 @@ public class QueueController {
 		 * map.put("rever", rever); map.put("consumerKey", indexStr);
 		 * producerService.sendMapMessage(destination, map);
 		 */
-		String id="29905380";
+		String id = "29905380";
 		String rever = QueueUtils.getReverStr(indexStr);
-		//String yb_userid = QueueUtils.getyb_userid(request, response);
+		// String yb_userid = QueueUtils.getyb_userid(request, response);
 		imessageService.saveImessage(id, imessage.getTheme(), imessage.getContent(), rever, indexStr);
 		return "redirect:" + Global.getAdminPath() + "/queue/queue/indexIcon";
 	}
@@ -303,6 +304,7 @@ public class QueueController {
 		if (StringUtils.isNotBlank(id)) {
 			Imessage imessage = imessageService.get(id);
 			List<Consumer> mList = imessage.getConList();
+			model.addAttribute("imessageId", id);
 			model.addAttribute("mList", mList);
 		}
 		return "modules/received/consumerDetails";
@@ -441,5 +443,76 @@ public class QueueController {
 	public String withdraw(@RequestParam(value = "id", required = true) String id) {// 撤回通知
 		imessageService.recallImessage(id);
 		return "redirect:" + Global.getAdminPath() + "/queue/queue/indexIcon";
+	}
+
+	@RequestMapping(value = { "exportInJxls" })
+	@ResponseBody
+	public String exportInJxls(String imessageId,HttpServletRequest request, HttpServletResponse response) {// 使用excel的Jxls标签导出excle
+		Imessage imessage = imessageService.get(imessageId);
+		
+		Map<String, String> jsonMap = new HashMap<String, String>();
+		jsonMap.put("status", "exception");
+		OutputStream os = null;
+		try {
+
+			// List<PerHoliday> pList = perHolidayService.getPerDictList(companyId);
+			List<JgzjAnnual> pList = jgzjAnnualService.findByCompanyId(companyId);
+
+			if (null != pList) {
+
+				// 获取模板名称
+				String fileName = "gwyblTmp.xls";
+				// 获取数据
+				// 创建map，把页面数据写进map中
+				Map<String, Object> model = new HashMap<String, Object>();
+				String fname = "";
+				String outPath = "";
+				model.put("empdata", pList);
+				String Suffix = fileName.substring(fileName.lastIndexOf("."));
+				fname = companyId + fileName.substring(0, fileName.indexOf(".")) + "_" + currentTime() + Suffix;
+				String templateUrl = request.getSession().getServletContext().getRealPath("/") + "WEB-INF"
+						+ File.separator + "excelTemplate" + File.separator + "report" + File.separator + fileName;
+				outPath = request.getSession().getServletContext().getRealPath("/") + "doc" + File.separator + "excel"
+						+ File.separator + "gwyblTmp" + File.separator + companyId;
+				File fileFolder = new File(outPath);
+				if (!fileFolder.exists()) {
+					fileFolder.mkdirs();
+				}
+				// 生成表并处理
+				os = new FileOutputStream(outPath + "/" + fname);
+				JxlsUtils.exportExcel(templateUrl, os, model);
+				// 下载表
+				String path = outPath + "/" + fname;
+				File file = new File(path); // 输出路径
+				boolean fileExists = false;
+				int cycleCount = 0;
+				do {
+					if (file.exists() && file.length() > 0) {
+						fileExists = true;
+						// 构造json返回对象
+						jsonMap.put("status", "ok");
+						jsonMap.put("fileName", fname);
+						return JSON.toJSONString(jsonMap);
+					} else {
+						cycleCount += 1;
+						Thread.sleep(1000);
+					}
+				} while (fileExists == false && cycleCount < 6);
+			}
+
+		} catch (Exception e) {
+			jsonMap.put("status", "exception");
+			e.printStackTrace();
+		} finally {
+			if (os != null) {
+				try {
+					os.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return JSON.toJSONString(jsonMap);
+
 	}
 }

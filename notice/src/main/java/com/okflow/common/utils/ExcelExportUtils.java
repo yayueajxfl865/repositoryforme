@@ -18,6 +18,11 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+/**
+ * excel导出工具类(有模板)
+ * @author xiaofanglin
+ * 
+ */
 public class ExcelExportUtils {
 
 	public static void createExcel(List<Map<String, String>> list, OutputStream output, HttpServletRequest request) {

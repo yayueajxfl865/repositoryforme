@@ -12,13 +12,15 @@ import com.okflow.common.utils.IdGen;
  * 数据Entity类
  * 
  * @author xiaofanglin
- * @version 
+ * @version
  */
 @MappedSuperclass
 public abstract class IdEntity<T> extends DataEntity<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/** 编号 */
 	protected String id;
+	/** 排序号 */
+	protected Integer sortNum;
 
 	public IdEntity() {
 		super();
@@ -38,4 +40,13 @@ public abstract class IdEntity<T> extends DataEntity<T> implements Serializable 
 	public void setId(String id) {
 		this.id = id;
 	}
+
+	public Integer getSortNum() {
+		return sortNum;
+	}
+
+	public void setSortNum(Integer sortNum) {
+		this.sortNum = sortNum;
+	}
+
 }

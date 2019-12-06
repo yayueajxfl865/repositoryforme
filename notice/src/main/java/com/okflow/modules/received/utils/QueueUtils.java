@@ -1,7 +1,9 @@
 package com.okflow.modules.received.utils;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -93,6 +95,13 @@ public class QueueUtils {
 		}
 	}
 
+	/**
+	 * 返回当前在线易班用户的易班ID
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	public static String getyb_userid(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			User currentUser = (User) request.getSession().getAttribute(QueueUtils.currentUser);
@@ -108,4 +117,17 @@ public class QueueUtils {
 		}
 		return "";
 	}
+
+	/**
+	 * 系统当前时间
+	 * 
+	 * @return
+	 */
+	public static String currentTime() {
+		Date now = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+		String time = dateFormat.format(now);
+		return time;
+	}
+
 }
