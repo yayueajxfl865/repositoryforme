@@ -28,11 +28,35 @@
 		layer.confirm('该操作可能会导致系统队列异常,是否确定删除该人员?', {icon: 3, title:'系统提示',shade: [0.1, '#117FBA']}, function(index){
 		
 		});
+	}
+	function exportJxls(){//导出
+		i = layer.msg("正在导出,请稍后...", {icon: 16,rate: 'top',time: 0});
+		$("#layerindex").val(i);
+		var imessageId=$("#imessageId").val();
+		$.ajax({
+			url:"${ctx}/queue/queue/exportInJxls/?imessageId="+imessageId,
+			type:"post",
+			async:false,
+			success:function(result){
+				var code = $.parseJSON(result);
+				if(code.status=="100"){
+					layer.msg('该人员正处于系统队列中,无法删除!', {icon: 2}); 
+				}
+				else if(code.status=="200"){
+					layer.msg('删除成功!', {icon: 1}); //删除成功
+		    		$("#tr_"+id).remove();
+				}
+			},
+			error:function(e){
+				layer.msg('删除失败!', {icon: 2}); 
+			}
+		});
 		
 	}
 </script>
 <body>
     <input type="hidden" id="layerindex" />
+    <input type="hidden" id="imessageId" name="imessageId" value="${imessageId }">
 	<form method="post" action="">
 		<div class="panel admin-panel">
 			<div class="panel-head">
@@ -42,6 +66,7 @@
 				<ul class="search">
 					<li>
 						<button class="button bg-main icon-backward" type="button" onclick="back()">返回</button>
+						<button class="button bg-main icon-backward" type="button" onclick="exportJxls()">导出</button>
 					</li>
 				</ul>
 			</div>
