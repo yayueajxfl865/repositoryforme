@@ -20,13 +20,12 @@ public class LoginInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
-		/*
 		User user = (User) request.getSession().getAttribute(QueueUtils.currentUser);
 		if (user == null) {
 			QueueUtils.authenTication(response);
 			return false;
 		}
-        */
+
 		return true;
 	}
 

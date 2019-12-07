@@ -34,6 +34,7 @@ import com.okflow.modules.received.entity.Tie;
 import com.okflow.modules.received.entity.YbUser;
 import com.okflow.modules.received.service.ClabanService;
 import com.okflow.modules.received.service.ClubsService;
+import com.okflow.modules.received.service.ConsumerService;
 import com.okflow.modules.received.service.ImessageService;
 import com.okflow.modules.received.service.TieService;
 import com.okflow.modules.received.service.YbUserService;
@@ -71,6 +72,8 @@ public class QueueController {
 	private ImessageService imessageService;
 	@Autowired
 	private ClubsService clubsService;
+	@Autowired
+	private ConsumerService consumerService;
 
 	@RequestMapping(value = { "tokenUrl" })
 	public String tokenUrl(HttpServletRequest request) {
@@ -447,9 +450,9 @@ public class QueueController {
 
 	@RequestMapping(value = { "exportInJxls" })
 	@ResponseBody
-	public String exportInJxls(String imessageId,HttpServletRequest request, HttpServletResponse response) {// 使用excel的Jxls标签导出excle
+	public String exportInJxls(String imessageId, HttpServletRequest request, HttpServletResponse response) {// 使用excel的Jxls标签导出excle
 		Imessage imessage = imessageService.get(imessageId);
-		
+
 		Map<String, String> jsonMap = new HashMap<String, String>();
 		jsonMap.put("status", "exception");
 		OutputStream os = null;
@@ -514,5 +517,13 @@ public class QueueController {
 		}
 		return JSON.toJSONString(jsonMap);
 
+	}
+
+	@RequestMapping(value = { "ajaxUserdata" })
+	public String ajaxUserdata(HttpServletRequest request, HttpServletResponse response, Model model) {
+		String yb_userid = QueueUtils.getyb_userid(request, response);
+		List<Consumer> list = consumerService.findByYbId(yb_userid);
+		model.addAttribute("list", list);
+		return null;
 	}
 }
