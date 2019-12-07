@@ -11,33 +11,47 @@
 <script src="${ctxStatic }/ui/mui/js/mui.min.js"></script>
 </head>
 <script type="text/javascript">
-mui.init({ 
-	 pullRefresh : {
-	　　 swipeBack: false, //关闭左滑关闭功能
+mui.init({
+	  pullRefresh : {
 	    container:"#refreshContainer",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
 	    down : {
 	      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
-	      color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
-	      height:'50px',//可选,默认50px.下拉刷新控件的高度,
-	      range:'100px', //可选 默认100px,控件可下拉拖拽的范围
-	      offset:'0px', //可选 默认0px,下拉刷新控件的起始位置
-	      auto: true,//可选,默认false.首次加载自动上拉刷新一次
-	      callback :pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-	   },
-	　　up:{
-	　　　　contentrefresh: '正在加载...',
-	　　　　contentnomore:'没有更多数据了',
-	　　　　callback:pulluploading //上拉加载下一页
-	　　}
-	 }
+	      color:'#2BD009',
+	      callback :pullfresh
+	    }
+	  }
 	});
+   
+
 	
-	function pulldownRefresh(){
-		
+	function pullfresh(){//刷新函数
+		setTimeout(function() {
+			//使用ajax请求数据
+			$.ajax({
+			url:"${ctx}/queue/queue/ajaxUserdata",
+			type:"post",
+			async:false,
+			success:function(result){
+				var code = $.parseJSON(result);
+				if(code.status=="100"){
+					layer.msg('该人员正处于系统队列中,无法删除!', {icon: 2}); 
+				}
+				else if(code.status=="200"){
+					layer.msg('删除成功!', {icon: 1}); //删除成功
+		    		$("#tr_"+id).remove();
+				}
+			},
+			error:function(e){
+				layer.msg('删除失败!', {icon: 2}); 
+			}
+		});
+			
+			mui.toast('更新了5条通知');
+			mui('#refreshContainer').pullRefresh().endPulldownToRefresh(); //完成刷新
+		}, 5000);
+
 	}
-	function pulluploading(){
-		
-	}
+	
 
 </script>
 <body>
