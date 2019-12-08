@@ -13,9 +13,11 @@ import org.apache.commons.lang.StringUtils;
 
 import com.okflow.common.utils.SpringContextHolder;
 import com.okflow.modules.received.entity.Clubs;
+import com.okflow.modules.received.entity.Grade;
 import com.okflow.modules.received.entity.Tie;
 import com.okflow.modules.received.entity.YbUser;
 import com.okflow.modules.received.service.ClubsService;
+import com.okflow.modules.received.service.GradeService;
 import com.okflow.modules.received.service.TieService;
 import com.okflow.modules.received.service.YbUserService;
 
@@ -32,10 +34,11 @@ import net.sf.json.JSONObject;
 public class QueueUtils {
 
 	public final static String currentUser = "currentUser";
-
+	public static String Token = "";
 	private static TieService tieService = SpringContextHolder.getBean(TieService.class);
 	private static YbUserService ybUserService = SpringContextHolder.getBean(YbUserService.class);
 	private static ClubsService clubsService = SpringContextHolder.getBean(ClubsService.class);
+	private static GradeService gradeService = SpringContextHolder.getBean(GradeService.class);
 
 	/**
 	 * 获取所有系别
@@ -128,6 +131,15 @@ public class QueueUtils {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 		String time = dateFormat.format(now);
 		return time;
+	}
+
+	public static String getRole(String ybId) {
+		List<Grade> list = gradeService.findGradeByYbId(ybId);
+		if (list.size() > 0) {
+			return list.get(0).getRole();
+		} else {
+			return null;
+		}
 	}
 
 }

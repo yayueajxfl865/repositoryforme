@@ -2,6 +2,9 @@
 	pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <%@ include file="/WEB-INF/views/include/layui.jsp"%>
+<%@page import="net.sf.json.JSONObject"%>
+<%@page import="cn.yiban.open.common.User"%>
+<%@page import="com.okflow.modules.received.utils.QueueUtils" %>
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -15,11 +18,21 @@
 <link rel="stylesheet" href="${ctxStatic }/lanseUI/css/admin.css">
 <script src="${ctxStatic }/lanseUI/js/jquery.js"></script>
 </head>
+<%
+	User user = (User) session.getAttribute(QueueUtils.currentUser);//user.me()返回一个JSON，获取该JSON种的info信息
+	JSONObject userInfo = null;
+	if (user != null) {
+	userInfo = JSONObject.fromObject(user.me()).getJSONObject("info");
+	String yb_userid=userInfo.getString("yb_userid");
+	System.out.print(yb_userid);
+	request.setAttribute("yb_userid", yb_userid);
+	}
+%>
 <body style="background-color: #f2f9fd;">
 	<div class="header bg-main">
 		<div class="logo margin-big-left fadein-top">
 			<h1>
-				<img src="${ctxStatic }/lanseUI/images/y.jpg"
+				<img src="<%=userInfo.getString("yb_userhead")%>"
 					class="radius-circle rotate-hover" height="50" alt="" />易班通知发布系统
 			</h1>
 		</div>
@@ -30,6 +43,8 @@
 		<div class="leftnav-title">
 			<strong><span class="icon-list"></span>菜单列表</strong>
 		</div>
+		
+		<c:if test="${fns:getRole(yb_userid) eq 'admin'}">
 		<h2>
 			<span class="icon-user"></span>数据管理
 		</h2>
@@ -47,6 +62,8 @@
 					class="icon-caret-right"></span>我的权限</a></li>
 		 --%>
 		</ul>
+		</c:if>
+		
 		<h2>
 			<span class="icon-pencil-square-o"></span>通知管理
 		</h2>

@@ -13,7 +13,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 	</properties>
-   
+
 	<dependencies>
 		<!-- spring start -->
 		<dependency>
@@ -264,6 +264,32 @@
 			<version>3.17</version>
 		</dependency>
 		<!-- read excel start -->
+		<!-- JSON对象和javaBean换转 -->
+		<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-core-asl -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20180813</version>
+		</dependency>
+
+		<!-- excel导出的jxls <dependency> <groupId>org.jxls</groupId> <artifactId>jxls</artifactId> 
+			<version>2.4.0</version> </dependency> <dependency> <groupId>org.jxls</groupId> 
+			<artifactId>jxls-poi</artifactId> <version>1.2.0</version> </dependency> 
+			<dependency> <groupId>org.jxls</groupId> <artifactId>jxls-jexcel</artifactId> 
+			<version>1.0.9</version> </dependency> -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-jexl</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+
 
 	</dependencies>
 

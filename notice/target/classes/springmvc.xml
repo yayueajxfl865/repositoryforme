@@ -41,6 +41,7 @@
     <!-- 4、配置直接转发的页面  --> 
     <mvc:view-controller path="${web.view.index}/login" view-name="layouts/login"/>
     <mvc:view-controller path="${web.view.index}/index" view-name="modules/received/index"/>
+    <mvc:view-controller path="${web.view.index}/userMessage" view-name="modules/received/userMessage"/>
      <!-- 5、定义无Controller的path<->view直接映射 
 	<mvc:view-controller path="/" view-name="redirect:${web.view.index}"/>
      -->
@@ -49,6 +50,19 @@
   <property name="defaultEncoding" value="${web.encoding}"></property>
   <property name="maxInMemorySize" value="${web.maxUploadSize}"></property>
   </bean>
+  
+  
+  <!-- 7、配置登录拦截器 -->
+   <mvc:interceptors> 
+       <!--登录拦截器-->
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <!-- 需排除拦截的地址 -->  
+            <!--  <mvc:exclude-mapping path="/userController/login"/> -->
+            <bean class="com.okflow.modules.received.utils.LoginInterceptor"/>
+        </mvc:interceptor>
+   </mvc:interceptors>
+   
     
 
 

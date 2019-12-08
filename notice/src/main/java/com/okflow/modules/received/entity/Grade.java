@@ -28,7 +28,7 @@ public class Grade extends IdEntity<Grade> {
 
 	private String yb_userid;// 易班ID
 
-	private String role;// 角色,分为:管理员(admin)经办(handle)班长(monitor)会长(chairman)老师(teacher)(student)
+	private String role;// 角色,分为:管理员(admin)经办(handle)班长(monitor)会长(chairman)老师(teacher)
 
 	@Length(min = 0, max = 64)
 	public String getYb_userid() {

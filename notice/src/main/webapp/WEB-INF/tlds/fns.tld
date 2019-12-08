@@ -27,4 +27,20 @@
     <function-signature>java.util.List getTieList()</function-signature>
     <example>${fns:getTieList()}</example>
   </function>
+  
+  <function>
+    <description>获取所有社团</description>
+    <name>getClubsList</name>
+    <function-class>com.okflow.modules.received.utils.QueueUtils</function-class>
+    <function-signature>java.util.List getClubsList()</function-signature>
+    <example>${fns:getClubsList()}</example>
+  </function>
+  
+  <function>
+    <description>获取当前登录角色</description>
+    <name>getRole</name>
+    <function-class>com.okflow.modules.received.utils.QueueUtils</function-class>
+    <function-signature>java.lang.String getRole(java.lang.String)</function-signature>
+    <example>${fns:getRole(java.lang.String)}</example>
+  </function>
 </taglib>

@@ -50,9 +50,6 @@ public class CallbackFilter implements Filter {
 				JSONObject json = JSONObject.fromObject(authorize.querytoken(code, AppUtil.BACKURL));
 				String access_token = json.getString("access_token");
 				User user = new User(access_token);
-				System.out.println("user" + user.me());
-				System.out.println("回调地址中的url" + request.getRequestURL());
-				System.out.println("回调地址中的uri" + request.getRequestURI());
 				request.getSession().setAttribute(QueueUtils.currentUser, user);
 				response.sendRedirect(request.getContextPath() + "/a/queue/queue/tokenUrl");
 			} else {

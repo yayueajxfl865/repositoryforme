@@ -173,4 +173,8 @@ public class YbUserService {
 	public List<YbUser> findByRole(String role) {
 		return ybUserDao.findByRole(role);
 	}
+
+	public YbUser get(String id) {
+		return ybUserDao.get(id);
+	}
 }

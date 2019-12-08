@@ -19,4 +19,8 @@ public class ConsumerDao extends BaseDao<Consumer> {
 		return find("from Consumer where yb_userid=:p1", new Parameter(ybId));
 
 	}
+
+	public void updateStatus(String id) {
+		update("update Consumer set status='已查看' where status is null and id=:p1", new Parameter(id));
+	}
 }

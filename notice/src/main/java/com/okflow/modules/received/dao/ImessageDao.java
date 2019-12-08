@@ -20,7 +20,7 @@ public class ImessageDao extends BaseDao<Imessage> {
 	@SuppressWarnings("unchecked")
 	public List<Imessage> getMeNewsList() {
 		String hql = "from Imessage order by createDate desc";
-		List<Imessage> list = createQuery(hql).setMaxResults(10).list();
+		List<Imessage> list = createQuery(hql).setMaxResults(7).list();
 		return list;
 	}
 

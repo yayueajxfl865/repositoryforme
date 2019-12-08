@@ -74,10 +74,15 @@
 			}
 		});
 	});
+	
+	function tempdown(){
+		window.location.href="${pageContext.request.contextPath }/doc/import/importTemp.zip";
+	}
+	
 </script>
 </head>
 <body>
-    <input type="hidden" id="layerindex" />
+    <input type="hidden" id="layerindex" value="${request. }"/>
 	<div>
 		<button type="button" class="layui-btn" id="student">
 			<i class="layui-icon">&#xe67c;</i>学生导入
@@ -88,7 +93,7 @@
 		<button type="button" class="layui-btn" id="clubs">
 			<i class="layui-icon">&#xe67c;</i>社团导入
 		</button>
-		<button type="button" class="layui-btn" id="clubs">
+		<button type="button" class="layui-btn" id="clubs" onclick="tempdown()">
 			<i class="layui-icon">&#xe601;</i>模版下载
 		</button>
 	</div>

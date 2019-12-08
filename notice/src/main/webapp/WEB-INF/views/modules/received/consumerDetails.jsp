@@ -29,29 +29,32 @@
 		
 		});
 	}
-	function exportJxls(){//导出
+	function exportJxls(imessageId){//导出
 		i = layer.msg("正在导出,请稍后...", {icon: 16,rate: 'top',time: 0});
 		$("#layerindex").val(i);
-		var imessageId=$("#imessageId").val();
 		$.ajax({
-			url:"${ctx}/queue/queue/exportInJxls/?imessageId="+imessageId,
+			url:"${ctx}/queue/queue/exportInJxls?imessageId="+imessageId,
 			type:"post",
 			async:false,
 			success:function(result){
 				var code = $.parseJSON(result);
-				if(code.status=="100"){
-					layer.msg('该人员正处于系统队列中,无法删除!', {icon: 2}); 
+				if(code.status=="ok"){
+					layer.close($("#layerindex").val());
+					var fileName=code.fileName;
+					window.location.href="${pageContext.request.contextPath }/doc/excel/recent/"+fileName;
 				}
-				else if(code.status=="200"){
-					layer.msg('删除成功!', {icon: 1}); //删除成功
-		    		$("#tr_"+id).remove();
+				else if(code.status=="exception"){
+					layer.msg('导出失败!', {icon: 2});
 				}
 			},
 			error:function(e){
-				layer.msg('删除失败!', {icon: 2}); 
+				layer.msg('导出失败!', {icon: 2});
 			}
 		});
-		
+	}
+	
+	function exportExcel(imessageId){//删除学生
+		window.location.href="${ctx }/queue/queue/exportExcel?imessageId="+imessageId;
 	}
 </script>
 <body>
@@ -66,7 +69,7 @@
 				<ul class="search">
 					<li>
 						<button class="button bg-main icon-backward" type="button" onclick="back()">返回</button>
-						<button class="button bg-main icon-backward" type="button" onclick="exportJxls()">导出</button>
+						<button class="button bg-main icon-foursquare" type="button" onclick="exportExcel('${imessageId}')">导出Excel</button>
 					</li>
 				</ul>
 			</div>

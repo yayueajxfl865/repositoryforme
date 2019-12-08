@@ -42,6 +42,7 @@
 </script>
 <body>
     <input type="hidden" id="layerindex" />
+    <input type="hidden" id="role" value="${role }"/>
 	<form method="post" action="">
 		<div class="panel admin-panel">
 			<div class="panel-head">
@@ -51,22 +52,28 @@
 				<table style="width: 50%">
 					<tr>
 						<td>
+						    <c:if test="${role eq 'admin'||role eq 'handle'||role eq 'monitor'||role eq 'teacher' }">
 							<div class="form_title_div" style="float: left;cursor: pointer;"
 								onclick="stuManage()">
 								<span>学生管理</span>
 							</div>
+							</c:if>
 						</td>
 						<td>
+						    <c:if test="${role eq 'admin'||role eq 'teacher' }">
 							<div class="form_title_div" style="float: left;cursor: pointer;"
 							onclick="teacherManage()">
 								<span>教师管理</span>
 							</div>
+							</c:if>
 						</td>
 						<td>
+						<c:if test="${role eq 'admin'||role eq 'chairman'}">
 							<div class="form_title_div" style="float: left;cursor: pointer;"
 							onclick="clubsManage()">
 								<span>社团管理</span>
 							</div>
+						</c:if>
 						</td>
 					</tr>
 				</table>

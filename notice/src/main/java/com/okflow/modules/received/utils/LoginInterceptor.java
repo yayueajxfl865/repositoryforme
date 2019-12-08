@@ -20,6 +20,13 @@ public class LoginInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
+		String uri = request.getRequestURI();
+		String suffx = uri.substring(uri.lastIndexOf("/") + 1);
+		if (suffx.equals("index")) {
+			QueueUtils.Token = "1";
+		} else if (suffx.equals("userMessage")) {
+			QueueUtils.Token = "2";
+		}
 		User user = (User) request.getSession().getAttribute(QueueUtils.currentUser);
 		if (user == null) {
 			QueueUtils.authenTication(response);

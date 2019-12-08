@@ -1,5 +1,7 @@
 package com.okflow.modules.received.web;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSON;
 import com.okflow.common.config.Global;
 import com.okflow.common.utils.ImportExcelUtils;
+import com.okflow.common.utils.JxlsUtils;
 import com.okflow.middleware.redis.RedisCache;
 import com.okflow.modules.received.entity.Claban;
 import com.okflow.modules.received.entity.Clubs;
@@ -38,6 +41,7 @@ import com.okflow.modules.received.service.ConsumerService;
 import com.okflow.modules.received.service.ImessageService;
 import com.okflow.modules.received.service.TieService;
 import com.okflow.modules.received.service.YbUserService;
+import com.okflow.modules.received.utils.ExportMeritManageUtils;
 import com.okflow.modules.received.utils.QueueUtils;
 
 import cn.yiban.open.common.User;
@@ -63,8 +67,6 @@ public class QueueController {
 	@Autowired
 	private YbUserService ybUserService;
 	@Autowired
-	private RedisCache redisCache;
-	@Autowired
 	private TieService tieService;
 	@Autowired
 	private ClabanService clabanService;
@@ -76,14 +78,21 @@ public class QueueController {
 	private ConsumerService consumerService;
 
 	@RequestMapping(value = { "tokenUrl" })
-	public String tokenUrl(HttpServletRequest request) {
-		StringBuffer url = request.getRequestURL();
-		String uri = request.getRequestURI();
-		System.out.println("url" + url);
-		System.out.println("uri" + uri);
+	public String tokenUrl(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-		System.out.println("回调地址");
-		return "modules/received/index";
+		if ("1".equals(QueueUtils.Token)) {
+			QueueUtils.Token = "";
+			return "modules/received/index";
+		} else if ("2".equals(QueueUtils.Token)) {
+			QueueUtils.Token = "";
+			String yb_userid = QueueUtils.getyb_userid(request, response);// 30092194
+			List<Consumer> list = consumerService.findByYbId(yb_userid);
+			model.addAttribute("list", list);
+			return "modules/received/userMessage";
+		} else {
+			QueueUtils.Token = "";
+			return "modules/received/index";
+		}
 	}
 
 	@RequestMapping(value = { "messagetext" })
@@ -100,19 +109,41 @@ public class QueueController {
 	}
 
 	@RequestMapping(value = { "release" })
-	public String release(Model model) {// 通知发布
-
+	public String release(HttpServletRequest request, HttpServletResponse response, Model model) {// 通知发布
+		String yb_userid = QueueUtils.getyb_userid(request, response);
+		String role = QueueUtils.getRole(yb_userid);
+		model.addAttribute("role", role);
 		return "modules/received/pageList";
 	}
 
 	@RequestMapping(value = { "stuManage" })
-	public String stuManage() {
-		return "modules/received/nextstep";
+	public String stuManage(HttpServletRequest request, HttpServletResponse response, Model model) {// 学生管理
+		String yb_userid = QueueUtils.getyb_userid(request, response);
+		String role = QueueUtils.getRole(yb_userid);
+		if (role.equals("monitor")) {// 角色是班长
+			List<YbUser> list = ybUserService.findStuList(yb_userid);
+			List<YbUser> userList = list.get(0).getClaban().getYbList();
+			model.addAttribute("userList", userList);
+			return "modules/received/stu";
+		} else {
+			return "modules/received/nextstep";
+		}
 	}
 
 	@RequestMapping(value = { "clubsManage" })
-	public String clubsManage() {
-		return "modules/received/clubsNextstep";
+	public String clubsManage(HttpServletRequest request, HttpServletResponse response, Model model) {// 社团管理
+		String yb_userid = QueueUtils.getyb_userid(request, response);
+		String role = QueueUtils.getRole(yb_userid);
+		if (role.equals("chairman")) {// 角色是班长
+			List<YbUser> list = ybUserService.findStuList(yb_userid);
+			List<YbUser> userList = list.get(0).getClaban().getYbList();
+			model.addAttribute("userList", userList);
+			model.addAttribute("role", role);
+			return "modules/received/stu";
+		} else {
+			return "modules/received/clubsNextstep";
+		}
+
 	}
 
 	@RequestMapping(value = { "excelTepImport" })
@@ -252,10 +283,10 @@ public class QueueController {
 		 * map.put("rever", rever); map.put("consumerKey", indexStr);
 		 * producerService.sendMapMessage(destination, map);
 		 */
-		String id = "29905380";
+		// String id = "29905380";
 		String rever = QueueUtils.getReverStr(indexStr);
-		// String yb_userid = QueueUtils.getyb_userid(request, response);
-		imessageService.saveImessage(id, imessage.getTheme(), imessage.getContent(), rever, indexStr);
+		String yb_userid = QueueUtils.getyb_userid(request, response);
+		imessageService.saveImessage(yb_userid, imessage.getTheme(), imessage.getContent(), rever, indexStr);
 		return "redirect:" + Global.getAdminPath() + "/queue/queue/indexIcon";
 	}
 
@@ -284,7 +315,10 @@ public class QueueController {
 	}
 
 	@RequestMapping(value = { "userMessage" })
-	public String userMessage() {// 用户消息列表
+	public String userMessage(HttpServletRequest request, HttpServletResponse response, Model model) {// 用户消息列表
+		String yb_userid = QueueUtils.getyb_userid(request, response);// 30092194
+		List<Consumer> list = consumerService.findByYbId(yb_userid);
+		model.addAttribute("list", list);
 		return "modules/received/userMessage";
 	}
 
@@ -451,56 +485,36 @@ public class QueueController {
 	@RequestMapping(value = { "exportInJxls" })
 	@ResponseBody
 	public String exportInJxls(String imessageId, HttpServletRequest request, HttpServletResponse response) {// 使用excel的Jxls标签导出excle
-		Imessage imessage = imessageService.get(imessageId);
-
+		// 有模版的导出
 		Map<String, String> jsonMap = new HashMap<String, String>();
-		jsonMap.put("status", "exception");
 		OutputStream os = null;
 		try {
-
-			// List<PerHoliday> pList = perHolidayService.getPerDictList(companyId);
-			List<JgzjAnnual> pList = jgzjAnnualService.findByCompanyId(companyId);
-
+			Imessage imessage = imessageService.get(imessageId);
+			List<Consumer> pList = imessage.getConList();
 			if (null != pList) {
-
-				// 获取模板名称
-				String fileName = "gwyblTmp.xls";
-				// 获取数据
-				// 创建map，把页面数据写进map中
+				String fileName = "mqinforma.xls";
 				Map<String, Object> model = new HashMap<String, Object>();
 				String fname = "";
 				String outPath = "";
 				model.put("empdata", pList);
 				String Suffix = fileName.substring(fileName.lastIndexOf("."));
-				fname = companyId + fileName.substring(0, fileName.indexOf(".")) + "_" + currentTime() + Suffix;
+				fname = fileName.substring(0, fileName.indexOf(".")) + "_" + QueueUtils.currentTime() + Suffix;
 				String templateUrl = request.getSession().getServletContext().getRealPath("/") + "WEB-INF"
 						+ File.separator + "excelTemplate" + File.separator + "report" + File.separator + fileName;
 				outPath = request.getSession().getServletContext().getRealPath("/") + "doc" + File.separator + "excel"
-						+ File.separator + "gwyblTmp" + File.separator + companyId;
+						+ File.separator + "recent";
 				File fileFolder = new File(outPath);
 				if (!fileFolder.exists()) {
 					fileFolder.mkdirs();
 				}
-				// 生成表并处理
 				os = new FileOutputStream(outPath + "/" + fname);
 				JxlsUtils.exportExcel(templateUrl, os, model);
-				// 下载表
 				String path = outPath + "/" + fname;
-				File file = new File(path); // 输出路径
-				boolean fileExists = false;
-				int cycleCount = 0;
-				do {
-					if (file.exists() && file.length() > 0) {
-						fileExists = true;
-						// 构造json返回对象
-						jsonMap.put("status", "ok");
-						jsonMap.put("fileName", fname);
-						return JSON.toJSONString(jsonMap);
-					} else {
-						cycleCount += 1;
-						Thread.sleep(1000);
-					}
-				} while (fileExists == false && cycleCount < 6);
+				File file = new File(path);
+				if (file.exists() && file.length() > 0) {
+					jsonMap.put("status", "ok");
+					jsonMap.put("fileName", fname);
+				}
 			}
 
 		} catch (Exception e) {
@@ -516,14 +530,36 @@ public class QueueController {
 			}
 		}
 		return JSON.toJSONString(jsonMap);
+	}
 
+	@RequestMapping(value = { "exportExcel" })
+	public void exportExcel(String imessageId, HttpServletRequest request, HttpServletResponse response) {
+		Imessage imessage = imessageService.get(imessageId);
+		List<Consumer> pList = imessage.getConList();
+		if (null != pList) {
+			try {
+				ExportMeritManageUtils.exportExcel_sealing(pList, request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@RequestMapping(value = { "ajaxUserdata" })
 	public String ajaxUserdata(HttpServletRequest request, HttpServletResponse response, Model model) {
 		String yb_userid = QueueUtils.getyb_userid(request, response);
 		List<Consumer> list = consumerService.findByYbId(yb_userid);
+		System.out.println("ajaxList" + list.size());
 		model.addAttribute("list", list);
-		return null;
+		return "modules/received/ajaxMessage";
 	}
+
+	@RequestMapping(value = { "imessageDetails" })
+	public String imessageDetails(String imessageId, String consumerId, Model model) {// 移动端查看消息详情
+		consumerService.updateStatus(consumerId);// 修改查看状态
+		Imessage imessage = imessageService.get(imessageId);
+		model.addAttribute("imessage", imessage);
+		return "modules/received/imessageDetails";
+	}
+
 }

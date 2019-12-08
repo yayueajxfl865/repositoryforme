@@ -19,4 +19,10 @@ public class ConsumerService {
 	public List<Consumer> findByYbId(String ybId) {
 		return consumerDao.findByYbId(ybId);
 	}
+
+	@Transactional(readOnly = false, timeout = 240)
+	public void updateStatus(String id) {
+		consumerDao.updateStatus(id);
+	}
+
 }

@@ -52,17 +52,17 @@
   </bean>
   
   
-  <!-- 7、配置登录拦截器
-   <mvc:interceptors> -->
-       <!--登录拦截器
+  <!-- 7、配置登录拦截器 -->
+   <mvc:interceptors> 
+       <!--登录拦截器-->
         <mvc:interceptor>
-            <mvc:mapping path="/**"/>-->
+            <mvc:mapping path="/**"/>
             <!-- 需排除拦截的地址 -->  
-            <!--  <mvc:exclude-mapping path="/userController/login"/> 
+            <!--  <mvc:exclude-mapping path="/userController/login"/> -->
             <bean class="com.okflow.modules.received.utils.LoginInterceptor"/>
         </mvc:interceptor>
    </mvc:interceptors>
-   -->
+   
     
 
 

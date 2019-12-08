@@ -96,4 +96,9 @@
     <filter-name>CallbackFilter</filter-name>
     <url-pattern>/CallbackFilter</url-pattern>
   </filter-mapping>
+  <!-- Session 配置 
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
+  -->
 </web-app>

@@ -59,7 +59,7 @@ public class Consumer extends IdEntity<Consumer> {
 		this.ybUser = ybUser;
 	}
 
-	@Length(min = 0, max = 1)
+	@Length(min = 0, max = 20)
 	public String getStatus() {
 		return status;
 	}

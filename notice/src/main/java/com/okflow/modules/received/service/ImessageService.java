@@ -66,6 +66,7 @@ public class ImessageService {
 			Consumer consumer = new Consumer();
 			consumer.setYb_userid(key);
 			consumer.setImessage(imessage);
+			consumer.setStatus("未查看");
 			List<YbUser> uList = ybUserDao.findStuList(key);
 			if (uList.size() > 0) {
 				consumer.setYbUser(uList.get(0));

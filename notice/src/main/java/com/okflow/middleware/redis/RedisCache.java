@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * @author luoshanxing
  * @version 2017-06-26
  */
-@Component
+//@Component
 public class RedisCache {
 	public final static String CAHCENAME = "niitcache";// 缓存名
 	public final static int CAHCETIME = 60;// 默认缓存时间 60S
