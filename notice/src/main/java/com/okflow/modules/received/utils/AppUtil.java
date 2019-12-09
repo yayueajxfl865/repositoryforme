@@ -10,11 +10,11 @@ public class AppUtil {
 	/*
 	 * web地址
 	 */
-	public static final String WEBEITEURL = "http://47.107.151.147:3389/notice/a/index";
+	public static final String WEBEITEURL = "http://47.107.151.147:443/notice/a/index";
 	/*
 	 * 
 	 * web授权回调地址
 	 */
-	public static final String BACKURL = "http://47.107.151.147:3389/notice/a/queue/queue/tokenUrl";
+	public static final String BACKURL = "http://47.107.151.147:443/notice/a/queue/queue/tokenUrl";
 
 }

@@ -43,7 +43,7 @@ public class CallbackFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) args1;
 		HttpServletResponse response = (HttpServletResponse) args2;
-		if (request.getSession().getAttribute("currentUser") == null) {
+		if (request.getSession().getAttribute(QueueUtils.currentUser) == null) {
 			if (request.getParameter("code") != null) {
 				String code = request.getParameter("code");
 				Authorize authorize = new Authorize(AppUtil.AppID, AppUtil.AppSECRET);
