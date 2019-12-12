@@ -133,6 +133,12 @@ public class QueueUtils {
 		return time;
 	}
 
+	/**
+	 * 返回当前登录角色
+	 * 
+	 * @param ybId
+	 * @return
+	 */
 	public static String getRole(String ybId) {
 		List<Grade> list = gradeService.findGradeByYbId(ybId);
 		if (list.size() > 0) {
@@ -140,6 +146,15 @@ public class QueueUtils {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * 清空session域
+	 * 
+	 * @param request
+	 */
+	public static void invalidate(HttpServletRequest request) {
+		request.getSession().invalidate();
 	}
 
 }

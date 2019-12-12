@@ -10,13 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jms.Destination;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +26,6 @@ import com.alibaba.fastjson.JSON;
 import com.okflow.common.config.Global;
 import com.okflow.common.utils.ImportExcelUtils;
 import com.okflow.common.utils.JxlsUtils;
-import com.okflow.middleware.redis.RedisCache;
 import com.okflow.modules.received.entity.Claban;
 import com.okflow.modules.received.entity.Clubs;
 import com.okflow.modules.received.entity.Consumer;
@@ -38,14 +35,12 @@ import com.okflow.modules.received.entity.YbUser;
 import com.okflow.modules.received.service.ClabanService;
 import com.okflow.modules.received.service.ClubsService;
 import com.okflow.modules.received.service.ConsumerService;
+import com.okflow.modules.received.service.GradeService;
 import com.okflow.modules.received.service.ImessageService;
 import com.okflow.modules.received.service.TieService;
 import com.okflow.modules.received.service.YbUserService;
 import com.okflow.modules.received.utils.ExportMeritManageUtils;
 import com.okflow.modules.received.utils.QueueUtils;
-
-import cn.yiban.open.common.User;
-import net.sf.json.JSONObject;
 
 /**
  * 消息队列Controller
@@ -76,6 +71,8 @@ public class QueueController {
 	private ClubsService clubsService;
 	@Autowired
 	private ConsumerService consumerService;
+	@Autowired
+	private GradeService gradeService;
 
 	@RequestMapping(value = { "tokenUrl" })
 	public String tokenUrl(HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -299,7 +296,9 @@ public class QueueController {
 	}
 
 	@RequestMapping(value = { "indexIcon" })
-	public String indexIcon(Model model) {
+	public String indexIcon(Model model, HttpServletRequest request, HttpServletResponse response) {
+		String yb_userid = QueueUtils.getyb_userid(request, response);
+		String role = QueueUtils.getRole(yb_userid);
 		List<Imessage> messageList = imessageService.getMeNewsList();
 		model.addAttribute("messageList", messageList);
 		return "modules/received/index-icon";
@@ -359,7 +358,7 @@ public class QueueController {
 			list = ybUserService.searchpByIdAndName(yb_userid, yb_realname);
 		}
 		model.addAttribute("userList", list);
-		return null;
+		return "modules/received/addhandle";
 	}
 
 	@RequestMapping(value = { "deleteImessage" })
@@ -395,6 +394,11 @@ public class QueueController {
 		return "modules/received/authorityPageList";
 	}
 
+	@RequestMapping(value = { "clubsAuthority" })
+	public String clubsAuthority() {
+		return "modules/received/clubsAuthority";
+	}
+
 	@RequestMapping(value = { "authorityNext" })
 	public String authorityNext() {
 		return "modules/received/authorityNext";
@@ -425,7 +429,10 @@ public class QueueController {
 	}
 
 	@RequestMapping(value = { "handleForm" })
-	public String handleForm() {// 经办管理
+	public String handleForm(Model model) {// 经办管理
+		String s3 = "1";
+		List<YbUser> list = ybUserService.findByS3(s3);
+		model.addAttribute("userList", list);
 		return "modules/received/handleForm";
 	}
 
@@ -440,6 +447,14 @@ public class QueueController {
 		List<YbUser> userList = clubs.getYbUserList();
 		model.addAttribute("userList", userList);
 		return "modules/received/clubsNextstep";
+	}
+
+	@RequestMapping(value = { "loadClubsAuthor" })
+	public String loadClubsAuthor(@RequestParam(value = "clubsId", required = true) String clubsId, Model model) {
+		Clubs clubs = clubsService.get(clubsId);
+		List<YbUser> userList = clubs.getYbUserList();
+		model.addAttribute("userList", userList);
+		return "modules/received/clubsAuthority";
 	}
 
 	@RequestMapping(value = { "teacherManage" })
@@ -560,6 +575,67 @@ public class QueueController {
 		Imessage imessage = imessageService.get(imessageId);
 		model.addAttribute("imessage", imessage);
 		return "modules/received/imessageDetails";
+	}
+
+	@RequestMapping(value = { "authorization" })
+	public String authorization(HttpServletRequest request, HttpServletResponse response, Model model) {// 验证登录信息
+		String yb_userid = QueueUtils.getyb_userid(request, response);
+		List<Object[]> yList = ybUserService.getExsingYbId(yb_userid);
+		if (yList.size() < 1) {// 系统查询无此人
+			QueueUtils.invalidate(request);
+			model.addAttribute("status", "none");
+			model.addAttribute("message", "当前用户信息不存在于系统中,请先导入用户信息!");
+			return "modules/received/tips";
+		}
+		List<Object[]> gList = gradeService.findExsingYbId(yb_userid);
+		if (gList.size() < 1) {
+			QueueUtils.invalidate(request);
+			model.addAttribute("status", "error");
+			model.addAttribute("message", "您暂无权限登录系统!");
+			return "modules/received/tips";
+		} else {
+			return "redirect:" + Global.getAdminPath() + "/index";
+		}
+	}
+
+	@RequestMapping(value = { "authorize" })
+	public String authorize(String id, String role) {// 授权指定人员
+		try {
+			ybUserService.authorize(id, role);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if ("monitor".equals(role)) {
+			String claId = ybUserService.get(id).getClaban().getId();
+			return "redirect:" + Global.getAdminPath() + "/queue/queue/authorityLoadStudent?claId=" + claId;
+		} else if ("chairman".equals(role)) {
+			String clubsId = ybUserService.get(id).getClubs().getId();
+			return "redirect:" + Global.getAdminPath() + "/queue/queue/loadClubsAuthor?clubsId=" + clubsId;// handleForm
+		} else if ("handle".equals(role)) {
+			return "redirect:" + Global.getAdminPath() + "/queue/queue/handleForm";//
+		} else {
+			return null;
+		}
+	}
+
+	@RequestMapping(value = { "cancelAuthorize" })
+	public String cancelAuthorize(String id, String role) {// 取消授权指定人员
+		try {
+			ybUserService.cancelAuthorize(id, role);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if ("monitor".equals(role)) {
+			String claId = ybUserService.get(id).getClaban().getId();
+			return "redirect:" + Global.getAdminPath() + "/queue/queue/authorityLoadStudent?claId=" + claId;
+		} else if ("chairman".equals(role)) {
+			String clubsId = ybUserService.get(id).getClubs().getId();
+			return "redirect:" + Global.getAdminPath() + "/queue/queue/loadClubsAuthor?clubsId=" + clubsId;
+		} else if ("handle".equals(role)) {
+			return "redirect:" + Global.getAdminPath() + "/queue/queue/handleForm";//
+		} else {
+			return null;
+		}
 	}
 
 }

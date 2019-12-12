@@ -42,6 +42,7 @@
     <mvc:view-controller path="${web.view.index}/login" view-name="layouts/login"/>
     <mvc:view-controller path="${web.view.index}/index" view-name="modules/received/index"/>
     <mvc:view-controller path="${web.view.index}/userMessage" view-name="modules/received/userMessage"/>
+    <mvc:view-controller path="${web.view.index}/loading" view-name="modules/received/loading"/>
      <!-- 5、定义无Controller的path<->view直接映射 
 	<mvc:view-controller path="/" view-name="redirect:${web.view.index}"/>
      -->
@@ -57,9 +58,14 @@
        <!--登录拦截器-->
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <!-- 需排除拦截的地址 -->  
-            <!--  <mvc:exclude-mapping path="/userController/login"/> -->
+            <mvc:exclude-mapping path="/a/queue/queue/tokenUrl"/>
             <bean class="com.okflow.modules.received.utils.LoginInterceptor"/>
+        </mvc:interceptor>
+        
+        <mvc:interceptor>
+            <mvc:mapping path="/a/queue/queue/tokenUrl"/>
+            <bean class="com.okflow.modules.received.utils.CallbackInterceptor"></bean>
+        
         </mvc:interceptor>
    </mvc:interceptors>
    

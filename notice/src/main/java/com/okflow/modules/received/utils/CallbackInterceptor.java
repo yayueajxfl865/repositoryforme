@@ -6,34 +6,30 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import cn.yiban.open.Authorize;
 import cn.yiban.open.common.User;
+import net.sf.json.JSONObject;
 
-/**
- * 登录拦截器
- * 
- * @author xiaofanglin
- * @version 2019-11-20
- */
-public class LoginInterceptor implements HandlerInterceptor {
+public class CallbackInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-
-		String uri = request.getRequestURI();
-		String suffx = uri.substring(uri.lastIndexOf("/") + 1);
-		if (suffx.equals("index")) {
-			QueueUtils.Token = "1";
-		} else if (suffx.equals("userMessage")) {
-			QueueUtils.Token = "2";
+		if (request.getSession().getAttribute(QueueUtils.currentUser) == null) {
+			if (request.getParameter("code") != null) {
+				String code = request.getParameter("code");
+				Authorize authorize = new Authorize(AppUtil.AppID, AppUtil.AppSECRET);
+				JSONObject json = JSONObject.fromObject(authorize.querytoken(code, AppUtil.BACKURL));
+				String access_token = json.getString("access_token");
+				User user = new User(access_token);
+				request.getSession().setAttribute(QueueUtils.currentUser, user);
+				response.sendRedirect(request.getContextPath() + "/a/loading");
+			} else {
+				QueueUtils.authenTication(response);
+			}
+		} else {
+			return true;
 		}
-		User user = (User) request.getSession().getAttribute(QueueUtils.currentUser);
-
-		if (user == null) {
-			QueueUtils.authenTication(response);
-			return false;
-		}
-
 		return true;
 	}
 

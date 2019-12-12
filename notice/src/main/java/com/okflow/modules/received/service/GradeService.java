@@ -19,4 +19,8 @@ public class GradeService {
 	public List<Grade> findGradeByYbId(String ybId) {
 		return gradeDao.findGradeByYbId(ybId);
 	}
+
+	public List<Object[]> findExsingYbId(String ybId) {
+		return gradeDao.findExsingYbId(ybId);
+	}
 }

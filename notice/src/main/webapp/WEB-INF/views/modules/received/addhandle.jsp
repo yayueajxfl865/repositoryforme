@@ -37,7 +37,6 @@
 				<c:if test="${userList !=null&&userList!=''}">
 					<table class="table table-hover text-center">
 						<tr>
-							<th width="50"></th>
 							<th>姓名</th>
 							<th>班别</th>
 							<th>系别</th>
@@ -45,15 +44,11 @@
 						</tr>
 						<c:forEach items="${userList }" var="u" varStatus="status">
 							<tr id="tr_${u.id }">
-								<td><input type="checkbox" name="chek[]"
-									value="${u.yb_userid }" /></td>
 								<td>${u.yb_realname }</td>
 								<td>${u.claban.name }</td>
 								<td>${u.claban.tie.name }</td>
 								<td><div class="button-group">
-										<a class="button border-red" href="javascript:void(0)"
-											onclick="deleteStu('${u.id}')"><span class="icon-trash-o"></span>
-											删除</a>
+										<a class="button border-main" href="javascript:void(0)" onclick="authorize('${u.id}')"><span class="icon-refresh"></span>授权</a>
 									</div></td>
 							</tr>
 						</c:forEach>
@@ -79,6 +74,13 @@
 			i = layer.msg("正在查询...", {icon: 16,rate: 'top',time: 0});
 		    var action="${ctx }/queue/queue/searchYbUser";
 		    $("#userForm").attr("action",action).submit();
+		}
+		function authorize(id){//授权
+			layer.confirm('确定授权该人员?', {icon: 0, title:'系统提示',shade: [0.1, '#117FBA']}, function(index){
+				i = layer.msg("正在授权...", {icon: 16,rate: 'top',time: 0});
+				$("#layerindex").val(i);
+				window.location.href="${ctx}/queue/queue/authorize/?id="+id+"&role=handle";
+			});
 		}
 	</script>
 </body>

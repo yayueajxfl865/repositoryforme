@@ -30,6 +30,9 @@ public class YbUser extends IdEntity<YbUser> {
 	private Claban claban;// 所属班级
 	private String role;// 所属角色
 	private Clubs clubs;// 所属社团
+	private String s1;// 班长授权标识
+	private String s2;// 会长授权标识
+	private String s3;// 经办角色标识
 
 	public YbUser() {
 		super();
@@ -41,6 +44,33 @@ public class YbUser extends IdEntity<YbUser> {
 		this.yb_realname = yb_realname;
 		this.yb_identity = yb_identity;
 		this.claban = claban;
+	}
+
+	@Length(min = 0, max = 64)
+	public String getS1() {
+		return s1;
+	}
+
+	public void setS1(String s1) {
+		this.s1 = s1;
+	}
+
+	@Length(min = 0, max = 64)
+	public String getS2() {
+		return s2;
+	}
+
+	public void setS2(String s2) {
+		this.s2 = s2;
+	}
+
+	@Length(min = 0, max = 64)
+	public String getS3() {
+		return s3;
+	}
+
+	public void setS3(String s3) {
+		this.s3 = s3;
 	}
 
 	@ManyToOne(cascade = CascadeType.ALL)

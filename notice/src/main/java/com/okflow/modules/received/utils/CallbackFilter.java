@@ -19,7 +19,7 @@ import net.sf.json.JSONObject;
 /**
  * Servlet Filter implementation class CallbackFilter
  */
-@WebFilter(value = "/a/queue/queue/tokenUrl")
+
 public class CallbackFilter implements Filter {
 
 	/**

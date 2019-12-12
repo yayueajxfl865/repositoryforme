@@ -154,6 +154,34 @@ public class YbUserService {
 	}
 
 	@Transactional(readOnly = false, timeout = 240)
+	public void authorize(String id, String role) {// 授权角色
+		Grade grade = new Grade();
+		grade.setYb_userid(ybUserDao.get(id).getYb_userid());
+		grade.setRole(role);
+		gradeDao.save(grade);
+		if ("monitor".equals(role)) {// 授权角色是班长
+			ybUserDao.updateS1(id, "1");
+		} else if ("chairman".equals(role)) {// 授权角色是会长
+			ybUserDao.updateS2(id, "1");
+		} else if ("handle".equals(role)) {// 授权角色是经办
+			ybUserDao.updateS3(id, "1");
+		}
+	}
+
+	@Transactional(readOnly = false, timeout = 240)
+	public void cancelAuthorize(String id, String role) {// 取消授权角色
+		if ("monitor".equals(role)) {// 授权角色是班长
+			ybUserDao.updateS1null(id);
+		} else if ("chairman".equals(role)) {// 授权角色是会长
+			ybUserDao.updateS2null(id);
+		} else if ("handle".equals(role)) {
+			ybUserDao.updateS3null(id);
+		}
+		gradeDao.deleteRole(ybUserDao.get(id).getYb_userid());
+
+	}
+
+	@Transactional(readOnly = false, timeout = 240)
 	public int delete(String id) {
 		return ybUserDao.deleteById(id);
 	}
@@ -176,5 +204,21 @@ public class YbUserService {
 
 	public YbUser get(String id) {
 		return ybUserDao.get(id);
+	}
+
+	public List<Object[]> getExsingYbId(String ybId) {
+		return ybUserDao.getExsingYbId(ybId);
+	}
+
+	public void updateS1(String id, String code) {
+		ybUserDao.updateS1(id, code);
+	}
+
+	public void updateS2(String id, String code) {
+		ybUserDao.updateS2(id, code);
+	}
+
+	public List<YbUser> findByS3(String s3) {
+		return ybUserDao.findByS3(s3);
 	}
 }

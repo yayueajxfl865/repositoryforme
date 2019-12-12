@@ -19,6 +19,7 @@
 <script src="${ctxStatic }/lanseUI/js/jquery.js"></script>
 </head>
 <%
+
 	User user = (User) session.getAttribute(QueueUtils.currentUser);//user.me()返回一个JSON，获取该JSON种的info信息
 	JSONObject userInfo = null;
 	if (user != null) {
@@ -27,7 +28,9 @@
 	System.out.print(yb_userid);
 	request.setAttribute("yb_userid", yb_userid);
 	}
+	
 %>
+
 <body style="background-color: #f2f9fd;">
 	<div class="header bg-main">
 		<div class="logo margin-big-left fadein-top">

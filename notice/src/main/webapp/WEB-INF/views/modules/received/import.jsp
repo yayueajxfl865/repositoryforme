@@ -82,7 +82,7 @@
 </script>
 </head>
 <body>
-    <input type="hidden" id="layerindex" value="${request. }"/>
+    <input type="hidden" id="layerindex" value=""/>
 	<div>
 		<button type="button" class="layui-btn" id="student">
 			<i class="layui-icon">&#xe67c;</i>学生导入

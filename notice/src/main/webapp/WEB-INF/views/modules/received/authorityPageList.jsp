@@ -33,6 +33,10 @@
 		i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
 		window.location.href="${ctx }/queue/queue/handleForm";
 	}
+	function clubsManage(){//社团管理
+		i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
+		window.location.href="${ctx }/queue/queue/clubsAuthority";
+	}
 
 </script>
 <body>
@@ -52,7 +56,7 @@
 							</div>
 						</td>
 						<td>
-							<div class="form_title_div" style="float: left;cursor: pointer;">
+							<div class="form_title_div" style="float: left;cursor: pointer;" onclick="clubsManage()">
 								<span>社团管理</span>
 							</div>
 						</td>

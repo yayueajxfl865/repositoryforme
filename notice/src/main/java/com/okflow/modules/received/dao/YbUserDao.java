@@ -33,4 +33,36 @@ public class YbUserDao extends BaseDao<YbUser> {
 		return find("from YbUser where role=:p1", new Parameter(role));
 	}
 
+	public List<Object[]> getExsingYbId(String ybId) {
+		return find("select id from YbUser where yb_userid=:p1", new Parameter(ybId));
+	}
+
+	public void updateS1(String id, String code) {
+		update("update YbUser set s1=:p1 where id=:p2", new Parameter(code, id));
+	}
+
+	public void updateS2(String id, String code) {
+		update("update YbUser set s2=:p1 where id=:p2", new Parameter(code, id));
+	}
+
+	public void updateS3(String id, String code) {
+		update("update YbUser set s3=:p1 where id=:p2", new Parameter(code, id));
+	}
+
+	public void updateS1null(String id) {
+		update("update YbUser set s1=null where id=:p1", new Parameter(id));
+	}
+
+	public void updateS2null(String id) {
+		update("update YbUser set s2=null where id=:p1", new Parameter(id));
+	}
+
+	public void updateS3null(String id) {
+		update("update YbUser set s3=null where id=:p1", new Parameter(id));
+	}
+
+	public List<YbUser> findByS3(String s3) {
+		return find("from YbUser where s3=:p1", new Parameter(s3));
+	}
+
 }

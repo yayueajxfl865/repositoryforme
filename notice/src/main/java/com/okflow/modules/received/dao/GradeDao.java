@@ -15,4 +15,12 @@ public class GradeDao extends BaseDao<Grade> {
 		return find("from Grade where yb_userid=:p1", new Parameter(ybId));
 	}
 
+	public List<Object[]> findExsingYbId(String ybId) {
+		return find("select id from Grade where yb_userid=:p1", new Parameter(ybId));
+	}
+
+	public void deleteRole(String yb_userid) {
+		update("delete from Grade where yb_userid=:p1", new Parameter(yb_userid));
+	}
+
 }

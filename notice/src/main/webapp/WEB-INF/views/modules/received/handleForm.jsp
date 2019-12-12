@@ -40,6 +40,13 @@ input[type=checkbox]:after  {
 		i = layer.msg("正在加载，请稍候...", {icon: 16,rate: 'top',time: 0});
 		window.location.href="${ctx }/queue/queue/addHandle";
 	}
+	function cancelAuthorize(id){//取消授权
+		layer.confirm('确定授权该人员?', {icon: 0, title:'系统提示',shade: [0.1, '#117FBA']}, function(index){
+			i = layer.msg("正在授权...", {icon: 16,rate: 'top',time: 0});
+			$("#layerindex").val(i);
+			window.location.href="${ctx}/queue/queue/cancelAuthorize/?id="+id+"&role=handle";
+		});
+	}
 </script>
 <body>
     <input type="hidden" id="layerindex" />
@@ -72,9 +79,7 @@ input[type=checkbox]:after  {
 								<td>${u.claban.name }</td>
 								<td>${u.claban.tie.name }</td>
 								<td><div class="button-group">
-										<a class="button border-red" href="javascript:void(0)"
-											onclick="deleteStu('${u.id}')"><span class="icon-trash-o"></span>
-											删除</a>
+										<a class="button border-red" href="javascript:void(0)" onclick="cancelAuthorize('${u.id}')"><span class="icon-refresh"></span>取消授权</a>
 									</div></td>
 							</tr>
 						</c:forEach>
