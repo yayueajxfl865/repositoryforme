@@ -95,7 +95,7 @@
 							<td>${status.index+1 }</td>
 							<td><span class="box"><a
 									style="color: #0088D5; cursor: pointer;"
-									href="javascript:void(0)">${m.producer.ybUser.yb_realname }</a></span></td>
+									href="javascript:void(0)">${m.ybUser.yb_realname }</a></span></td>
 							<td>${m.theme }</td>
 							<td><span class="box"><a
 									style="color: #0088D5; cursor: pointer;"
