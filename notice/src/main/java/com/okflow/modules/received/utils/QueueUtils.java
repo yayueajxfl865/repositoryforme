@@ -34,7 +34,7 @@ import net.sf.json.JSONObject;
 public class QueueUtils {
 
 	public final static String currentUser = "currentUser";
-	public static String Token = "";
+	public volatile static  String Token = "";
 	private static TieService tieService = SpringContextHolder.getBean(TieService.class);
 	private static YbUserService ybUserService = SpringContextHolder.getBean(YbUserService.class);
 	private static ClubsService clubsService = SpringContextHolder.getBean(ClubsService.class);
